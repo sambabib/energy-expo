@@ -1,121 +1,151 @@
 import { Text, View } from '@/components/Themed';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useState } from 'react';
-import { ScrollView, StyleSheet, Switch } from 'react-native';
+import { ScrollView, StyleSheet, Switch, TouchableOpacity } from 'react-native';
 
 export default function SettingsScreen() {
-  const [notifications, setNotifications] = useState(true);
+  // Account settings
+  const [accountEnabled, setAccountEnabled] = useState(true);
+  const [notifications, setNotifications] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
-  const [peakAlerts, setPeakAlerts] = useState(true);
-  const [weeklyReport, setWeeklyReport] = useState(true);
+  const [biometric, setBiometric] = useState(true);
+
+  // Energy Monitoring settings
+  const [realTimeMonitoring, setRealTimeMonitoring] = useState(true);
+  const [peakUsageAlerts, setPeakUsageAlerts] = useState(true);
+  const [solarTracking, setSolarTracking] = useState(false);
+
+  // Privacy settings
+  const [locationService, setLocationService] = useState(true);
+  const [dataCollection, setDataCollection] = useState(true);
 
   return (
-    <ScrollView style={styles.scrollView}>
+    <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
       <View style={styles.container}>
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity style={styles.backButton}>
+            <FontAwesome name="chevron-left" size={18} color="#333" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Settings</Text>
+          <View style={styles.headerSpacer} />
+        </View>
+
         {/* Account Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Account</Text>
-          <View style={styles.card}>
-            <View style={styles.profileRow}>
-              <View style={styles.avatar}>
-                <Text style={styles.avatarText}>JD</Text>
-              </View>
-              <View style={styles.profileInfo}>
-                <Text style={styles.profileName}>John Doe</Text>
-                <Text style={styles.profileEmail}>john.doe@email.com</Text>
-              </View>
-            </View>
-          </View>
+        <Text style={styles.sectionTitle}>Account</Text>
+
+        <View style={styles.settingRow}>
+          <Text style={styles.settingLabel}>Account</Text>
+          <Switch
+            value={accountEnabled}
+            onValueChange={setAccountEnabled}
+            trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
+            thumbColor="#fff"
+          />
+        </View>
+        <View style={styles.divider} />
+
+        <View style={styles.settingRow}>
+          <Text style={styles.settingLabel}>Notifications</Text>
+          <Switch
+            value={notifications}
+            onValueChange={setNotifications}
+            trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
+            thumbColor="#fff"
+          />
+        </View>
+        <View style={styles.divider} />
+
+        <View style={styles.settingRow}>
+          <Text style={styles.settingLabel}>Dark Mode</Text>
+          <Switch
+            value={darkMode}
+            onValueChange={setDarkMode}
+            trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
+            thumbColor="#fff"
+          />
+        </View>
+        <View style={styles.divider} />
+
+        <View style={styles.settingRow}>
+          <Text style={styles.settingLabel}>Biometric</Text>
+          <Switch
+            value={biometric}
+            onValueChange={setBiometric}
+            trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
+            thumbColor="#fff"
+          />
         </View>
 
-        {/* Preferences Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Preferences</Text>
-          <View style={styles.card}>
-            <View style={styles.settingRow}>
-              <View>
-                <Text style={styles.settingLabel}>Push Notifications</Text>
-                <Text style={styles.settingDescription}>Receive usage alerts</Text>
-              </View>
-              <Switch
-                value={notifications}
-                onValueChange={setNotifications}
-                trackColor={{ false: '#767577', true: '#81b0ff' }}
-                thumbColor={notifications ? '#4CAF50' : '#f4f3f4'}
-              />
-            </View>
-            <View style={styles.divider} />
-            <View style={styles.settingRow}>
-              <View>
-                <Text style={styles.settingLabel}>Dark Mode</Text>
-                <Text style={styles.settingDescription}>Use dark theme</Text>
-              </View>
-              <Switch
-                value={darkMode}
-                onValueChange={setDarkMode}
-                trackColor={{ false: '#767577', true: '#81b0ff' }}
-                thumbColor={darkMode ? '#4CAF50' : '#f4f3f4'}
-              />
-            </View>
+        {/* Energy Monitoring Section */}
+        <Text style={styles.sectionTitle}>Energy Monitoring</Text>
+
+        <View style={styles.settingRow}>
+          <Text style={styles.settingLabel}>Real-time Monitoring</Text>
+          <Switch
+            value={realTimeMonitoring}
+            onValueChange={setRealTimeMonitoring}
+            trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
+            thumbColor="#fff"
+          />
+        </View>
+        <View style={styles.divider} />
+
+        <View style={styles.settingRow}>
+          <View style={styles.settingLabelContainer}>
+            <Text style={styles.settingLabel}>Peak Usage Alerts</Text>
+            <Text style={styles.settingDescription}>Notify when usage exceeds threshold</Text>
           </View>
+          <Switch
+            value={peakUsageAlerts}
+            onValueChange={setPeakUsageAlerts}
+            trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
+            thumbColor="#fff"
+          />
+        </View>
+        <View style={styles.divider} />
+
+        <View style={styles.settingRow}>
+          <Text style={styles.settingLabel}>Solar Panel Tracking</Text>
+          <Switch
+            value={solarTracking}
+            onValueChange={setSolarTracking}
+            trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
+            thumbColor="#fff"
+          />
         </View>
 
-        {/* Alerts Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Alerts</Text>
-          <View style={styles.card}>
-            <View style={styles.settingRow}>
-              <View>
-                <Text style={styles.settingLabel}>Peak Usage Alerts</Text>
-                <Text style={styles.settingDescription}>Notify during high usage</Text>
-              </View>
-              <Switch
-                value={peakAlerts}
-                onValueChange={setPeakAlerts}
-                trackColor={{ false: '#767577', true: '#81b0ff' }}
-                thumbColor={peakAlerts ? '#4CAF50' : '#f4f3f4'}
-              />
-            </View>
-            <View style={styles.divider} />
-            <View style={styles.settingRow}>
-              <View>
-                <Text style={styles.settingLabel}>Weekly Report</Text>
-                <Text style={styles.settingDescription}>Email summary every Sunday</Text>
-              </View>
-              <Switch
-                value={weeklyReport}
-                onValueChange={setWeeklyReport}
-                trackColor={{ false: '#767577', true: '#81b0ff' }}
-                thumbColor={weeklyReport ? '#4CAF50' : '#f4f3f4'}
-              />
-            </View>
-          </View>
+        {/* Privacy Section */}
+        <Text style={styles.sectionTitle}>Privacy</Text>
+
+        <View style={styles.settingRow}>
+          <Text style={styles.settingLabel}>Location Service</Text>
+          <Switch
+            value={locationService}
+            onValueChange={setLocationService}
+            trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
+            thumbColor="#fff"
+          />
+        </View>
+        <View style={styles.divider} />
+
+        <View style={styles.settingRow}>
+          <Text style={styles.settingLabel}>Data Collection</Text>
+          <Switch
+            value={dataCollection}
+            onValueChange={setDataCollection}
+            trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
+            thumbColor="#fff"
+          />
         </View>
 
-        {/* Energy Plan Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Energy Plan</Text>
-          <View style={styles.card}>
-            <View style={styles.planRow}>
-              <Text style={styles.planLabel}>Current Plan</Text>
-              <Text style={styles.planValue}>Standard Rate</Text>
-            </View>
-            <View style={styles.divider} />
-            <View style={styles.planRow}>
-              <Text style={styles.planLabel}>Rate per kWh</Text>
-              <Text style={styles.planValue}>$0.12</Text>
-            </View>
-            <View style={styles.divider} />
-            <View style={styles.planRow}>
-              <Text style={styles.planLabel}>Billing Cycle</Text>
-              <Text style={styles.planValue}>Monthly</Text>
-            </View>
-          </View>
-        </View>
+        {/* Clear Data Button */}
+        <TouchableOpacity style={styles.clearButton}>
+          <Text style={styles.clearButtonText}>Clear All Data</Text>
+        </TouchableOpacity>
 
-        {/* App Info */}
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>Energy App v1.0.0</Text>
-        </View>
+        {/* App Version */}
+        <Text style={styles.versionText}>Energy App v1.0.0</Text>
       </View>
     </ScrollView>
   );
@@ -125,92 +155,73 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
+  scrollContent: {
+    paddingBottom: 100,
+  },
   container: {
     flex: 1,
     padding: 20,
   },
-  section: {
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-    opacity: 0.6,
-    marginBottom: 12,
-  },
-  card: {
-    borderRadius: 16,
-    overflow: 'hidden',
-  },
-  profileRow: {
+  header: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 16,
+    justifyContent: 'space-between',
+    marginBottom: 32,
   },
-  avatar: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: '#4CAF50',
+  backButton: {
+    width: 40,
+    height: 40,
     justifyContent: 'center',
-    alignItems: 'center',
   },
-  avatarText: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  profileInfo: {
-    marginLeft: 16,
-  },
-  profileName: {
+  headerTitle: {
     fontSize: 18,
     fontWeight: '600',
   },
-  profileEmail: {
-    fontSize: 14,
-    opacity: 0.6,
-    marginTop: 2,
+  headerSpacer: {
+    width: 40,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginTop: 24,
+    marginBottom: 16,
   },
   settingRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
+    paddingVertical: 14,
+  },
+  settingLabelContainer: {
+    flex: 1,
+    marginRight: 16,
   },
   settingLabel: {
     fontSize: 16,
   },
   settingDescription: {
-    fontSize: 12,
-    opacity: 0.6,
+    fontSize: 13,
+    opacity: 0.5,
     marginTop: 2,
   },
   divider: {
     height: 1,
-    backgroundColor: 'rgba(128,128,128,0.2)',
-    marginHorizontal: 16,
+    backgroundColor: 'rgba(128,128,128,0.15)',
   },
-  planRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 16,
-  },
-  planLabel: {
-    fontSize: 16,
-  },
-  planValue: {
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  footer: {
+  clearButton: {
     alignItems: 'center',
-    paddingVertical: 20,
+    paddingVertical: 16,
+    marginTop: 32,
   },
-  footerText: {
+  clearButtonText: {
+    fontSize: 16,
+    color: '#4CAF50',
+    textDecorationLine: 'underline',
+  },
+  versionText: {
+    textAlign: 'center',
     fontSize: 12,
     opacity: 0.4,
+    marginTop: 16,
   },
 });
