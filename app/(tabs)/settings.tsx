@@ -1,23 +1,10 @@
 import { Text, View } from '@/components/Themed';
+import { useAppContext } from '@/context/AppContext';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { useState } from 'react';
 import { ScrollView, StyleSheet, Switch, TouchableOpacity } from 'react-native';
 
 export default function SettingsScreen() {
-  // Account settings
-  const [accountEnabled, setAccountEnabled] = useState(true);
-  const [notifications, setNotifications] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
-  const [biometric, setBiometric] = useState(true);
-
-  // Energy Monitoring settings
-  const [realTimeMonitoring, setRealTimeMonitoring] = useState(true);
-  const [peakUsageAlerts, setPeakUsageAlerts] = useState(true);
-  const [solarTracking, setSolarTracking] = useState(false);
-
-  // Privacy settings
-  const [locationService, setLocationService] = useState(true);
-  const [dataCollection, setDataCollection] = useState(true);
+  const { settings, updateSetting } = useAppContext();
 
   return (
     <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
@@ -37,8 +24,8 @@ export default function SettingsScreen() {
         <View style={styles.settingRow}>
           <Text style={styles.settingLabel}>Account</Text>
           <Switch
-            value={accountEnabled}
-            onValueChange={setAccountEnabled}
+            value={settings.accountEnabled}
+            onValueChange={(value) => updateSetting('accountEnabled', value)}
             trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
             thumbColor="#fff"
           />
@@ -48,8 +35,8 @@ export default function SettingsScreen() {
         <View style={styles.settingRow}>
           <Text style={styles.settingLabel}>Notifications</Text>
           <Switch
-            value={notifications}
-            onValueChange={setNotifications}
+            value={settings.notifications}
+            onValueChange={(value) => updateSetting('notifications', value)}
             trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
             thumbColor="#fff"
           />
@@ -59,8 +46,8 @@ export default function SettingsScreen() {
         <View style={styles.settingRow}>
           <Text style={styles.settingLabel}>Dark Mode</Text>
           <Switch
-            value={darkMode}
-            onValueChange={setDarkMode}
+            value={settings.darkMode}
+            onValueChange={(value) => updateSetting('darkMode', value)}
             trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
             thumbColor="#fff"
           />
@@ -70,8 +57,8 @@ export default function SettingsScreen() {
         <View style={styles.settingRow}>
           <Text style={styles.settingLabel}>Biometric</Text>
           <Switch
-            value={biometric}
-            onValueChange={setBiometric}
+            value={settings.biometric}
+            onValueChange={(value) => updateSetting('biometric', value)}
             trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
             thumbColor="#fff"
           />
@@ -83,8 +70,8 @@ export default function SettingsScreen() {
         <View style={styles.settingRow}>
           <Text style={styles.settingLabel}>Real-time Monitoring</Text>
           <Switch
-            value={realTimeMonitoring}
-            onValueChange={setRealTimeMonitoring}
+            value={settings.realTimeMonitoring}
+            onValueChange={(value) => updateSetting('realTimeMonitoring', value)}
             trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
             thumbColor="#fff"
           />
@@ -97,8 +84,8 @@ export default function SettingsScreen() {
             <Text style={styles.settingDescription}>Notify when usage exceeds threshold</Text>
           </View>
           <Switch
-            value={peakUsageAlerts}
-            onValueChange={setPeakUsageAlerts}
+            value={settings.peakUsageAlerts}
+            onValueChange={(value) => updateSetting('peakUsageAlerts', value)}
             trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
             thumbColor="#fff"
           />
@@ -108,8 +95,8 @@ export default function SettingsScreen() {
         <View style={styles.settingRow}>
           <Text style={styles.settingLabel}>Solar Panel Tracking</Text>
           <Switch
-            value={solarTracking}
-            onValueChange={setSolarTracking}
+            value={settings.solarTracking}
+            onValueChange={(value) => updateSetting('solarTracking', value)}
             trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
             thumbColor="#fff"
           />
@@ -121,8 +108,8 @@ export default function SettingsScreen() {
         <View style={styles.settingRow}>
           <Text style={styles.settingLabel}>Location Service</Text>
           <Switch
-            value={locationService}
-            onValueChange={setLocationService}
+            value={settings.locationService}
+            onValueChange={(value) => updateSetting('locationService', value)}
             trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
             thumbColor="#fff"
           />
@@ -132,8 +119,8 @@ export default function SettingsScreen() {
         <View style={styles.settingRow}>
           <Text style={styles.settingLabel}>Data Collection</Text>
           <Switch
-            value={dataCollection}
-            onValueChange={setDataCollection}
+            value={settings.dataCollection}
+            onValueChange={(value) => updateSetting('dataCollection', value)}
             trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
             thumbColor="#fff"
           />

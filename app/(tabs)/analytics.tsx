@@ -1,29 +1,11 @@
 import { Text, View } from '@/components/Themed';
+import { analyticsConsumptionData, co2Saved, dayLabels, performanceData } from '@/services/mockData';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 
 const PERIODS = ['24 hour', 'Weekly', 'Monthly', '6 months'] as const;
 type Period = typeof PERIODS[number];
-
-// Mock data for stacked bar chart (Direct Solar, Battery, Grid percentages)
-const consumptionData = [
-  { solar: 60, battery: 30, grid: 10 },
-  { solar: 55, battery: 30, grid: 15 },
-  { solar: 80, battery: 26, grid: 14 },
-  { solar: 74, battery: 26, grid: 20 },
-  { solar: 100, battery: 0, grid: 0 },
-  { solar: 55, battery: 30, grid: 15 },
-  { solar: 63, battery: 37, grid: 15 },
-];
-
-// Mock data for performance metrics line chart
-const performanceData = {
-  energy: [180, 220, 280, 320, 380, 420, 350],
-  efficiency: [45, 55, 70, 85, 95, 100, 80],
-};
-
-const dayLabels = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
 export default function AnalyticsScreen() {
   const [selectedPeriod, setSelectedPeriod] = useState<Period>('Weekly');
@@ -69,7 +51,7 @@ export default function AnalyticsScreen() {
 
           {/* Stacked Bar Chart */}
           <View style={styles.stackedChart}>
-            {consumptionData.map((item, index) => (
+            {analyticsConsumptionData.map((item, index) => (
               <View key={index} style={styles.stackedBarContainer}>
                 <View style={styles.stackedBar}>
                   {/* Grid (top - striped) */}
@@ -116,7 +98,7 @@ export default function AnalyticsScreen() {
             <FontAwesome name="recycle" size={24} color="#4CAF50" />
           </View>
           <View style={styles.emissionsContent}>
-            <Text style={styles.emissionsValue}>750 kg CO2 emissions saved</Text>
+            <Text style={styles.emissionsValue}>{co2Saved} kg CO2 emissions saved</Text>
             <Text style={styles.emissionsSubtext}>Carbon footprint offset</Text>
           </View>
         </View>

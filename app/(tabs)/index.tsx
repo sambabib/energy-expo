@@ -1,11 +1,11 @@
 import { Text, View } from '@/components/Themed';
+import { batteryData } from '@/services/mockData';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { ScrollView, StyleSheet } from 'react-native';
 
 export default function HomeScreen() {
-  const batteryLevel = 82;
   const batteryBars = 10;
-  const filledBars = Math.round((batteryLevel / 100) * batteryBars);
+  const filledBars = Math.round((batteryData.level / 100) * batteryBars);
 
   return (
     <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
@@ -71,7 +71,7 @@ export default function HomeScreen() {
             </View>
             <View style={styles.chargingRight}>
               <Text style={styles.batteryIcon}>⚡</Text>
-              <Text style={styles.batteryPercent}>{batteryLevel}%</Text>
+              <Text style={styles.batteryPercent}>{batteryData.level}%</Text>
             </View>
           </View>
           <Text style={styles.capacityText}>4500 kw cap</Text>
