@@ -25,6 +25,7 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
+        headerShown: false,
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         tabBarInactiveTintColor: colorScheme === 'dark' ? '#888' : '#999',
         tabBarShowLabel: false,
@@ -44,10 +45,6 @@ export default function TabLayout() {
           elevation: 8,
           paddingHorizontal: 16,
         },
-        headerStyle: {
-          backgroundColor: colorScheme === 'dark' ? '#1a1a1a' : '#ffffff',
-        },
-        headerTintColor: colorScheme === 'dark' ? '#fff' : '#000',
       }}>
       <Tabs.Screen
         name="index"
