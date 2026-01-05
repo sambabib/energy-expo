@@ -1,7 +1,7 @@
 import { Text, View } from '@/components/Themed';
 import { batteryData, energyFlowData, userData } from '@/services/mockData';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { ScrollView, StyleSheet } from 'react-native';
+import { Image, ScrollView, StyleSheet } from 'react-native';
 
 export default function HomeScreen() {
   const batteryBars = 10;
@@ -32,6 +32,63 @@ export default function HomeScreen() {
 
         {/* Energy Flow Visualization */}
         <View style={styles.energyFlowCard}>
+          {/* Connection Lines */}
+          <View style={[StyleSheet.absoluteFill, { zIndex: -1 }]}>
+            {/* Export Line (Red) - Down and Right */}
+            <View style={{
+              position: 'absolute',
+              top: 80,
+              left: 50,
+              width: 2,
+              height: 50,
+              borderLeftWidth: 2,
+              borderColor: '#ef5350',
+              borderStyle: 'dashed',
+            }} />
+            <View style={{
+              position: 'absolute',
+              top: 130,
+              left: 50,
+              right: '50%',
+              height: 2,
+              borderTopWidth: 2,
+              borderColor: '#ef5350',
+              borderStyle: 'dashed',
+            }} />
+            <View style={{
+              position: 'absolute',
+              top: 130,
+              left: '50%',
+              height: 30,
+              borderLeftWidth: 2,
+              borderColor: '#ef5350',
+              borderStyle: 'dashed',
+            }} />
+
+            {/* Home Line (Green) - Straight Down */}
+            <View style={{
+              position: 'absolute',
+              top: 80,
+              left: '50%',
+              marginLeft: -1, // Center the 2px line
+              height: 72,
+              borderLeftWidth: 2,
+              borderColor: '#66bb6a',
+              borderStyle: 'dashed',
+            }} />
+
+            {/* Produce Line (Orange) - Straight Down */}
+            <View style={{
+              position: 'absolute',
+              top: 80,
+              right: 50,
+              height: 72,
+              borderLeftWidth: 2,
+              borderColor: '#ff7043',
+              borderStyle: 'dashed',
+            }} />
+          </View>
+
           {/* Floating Energy Data Points */}
           <View style={styles.energyPointsRow}>
             <View style={[styles.energyBubble, styles.exportBubble]}>
@@ -48,12 +105,44 @@ export default function HomeScreen() {
             </View>
           </View>
 
-          {/* House Illustration Placeholder */}
+          {/* House Illustration */}
           <View style={styles.houseContainer}>
-            <View style={styles.housePlaceholder}>
-              <FontAwesome name="home" size={48} color="#666" />
-              <Text style={styles.houseText}>Your Home</Text>
+            {/* Stored Energy Line */}
+            <View style={{
+              position: 'absolute',
+              bottom: 50,
+              left: 50,
+              width: 50,
+              height: 40,
+              zIndex: -1,
+            }}>
+              <View style={{
+                position: 'absolute',
+                left: 0,
+                bottom: 0,
+                width: 2,
+                height: '100%',
+                borderLeftWidth: 2,
+                borderColor: '#26a69a',
+                borderStyle: 'dashed',
+              }} />
+              <View style={{
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                width: '100%',
+                height: 2,
+                borderTopWidth: 2,
+                borderColor: '#26a69a',
+                borderStyle: 'dashed',
+              }} />
             </View>
+
+            <Image
+              source={require('@/assets/images/house.png')}
+              style={styles.houseImage}
+              resizeMode="contain"
+            />
             {/* Stored Energy Point */}
             <View style={[styles.energyBubble, styles.storedBubble]}>
               <Text style={styles.bubbleValue}>{energyFlowData.stored} kw</Text>
@@ -214,12 +303,13 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   energyBubble: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
+    zIndex: 1, // Ensure bubbles sit on top of lines
   },
   exportBubble: {
     borderColor: '#ef5350',
@@ -246,18 +336,14 @@ const styles = StyleSheet.create({
   },
   houseContainer: {
     alignItems: 'center',
-    position: 'relative',
-    minHeight: 120,
-  },
-  housePlaceholder: {
-    alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
+    marginVertical: 20,
+    height: 200,
+    position: 'relative',
   },
-  houseText: {
-    marginTop: 8,
-    fontSize: 12,
-    opacity: 0.6,
+  houseImage: {
+    width: 280,
+    height: 200,
   },
   chargingCard: {
     padding: 20,
