@@ -1,5 +1,5 @@
 import { Text, View } from '@/components/Themed';
-import { batteryData } from '@/services/mockData';
+import { batteryData, energyFlowData, userData } from '@/services/mockData';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { ScrollView, StyleSheet } from 'react-native';
 
@@ -13,7 +13,7 @@ export default function HomeScreen() {
         {/* Header Section */}
         <View style={styles.header}>
           <View>
-            <Text style={styles.greeting}>Hi, Alex 👋</Text>
+            <Text style={styles.greeting}>Hi, {userData.name}</Text>
             <Text style={styles.subtitle}>Welcome back</Text>
           </View>
           <View style={styles.notificationBadge}>
@@ -35,15 +35,15 @@ export default function HomeScreen() {
           {/* Floating Energy Data Points */}
           <View style={styles.energyPointsRow}>
             <View style={[styles.energyBubble, styles.exportBubble]}>
-              <Text style={styles.bubbleValue}>1.5 kw</Text>
+              <Text style={styles.bubbleValue}>{energyFlowData.export} kw</Text>
               <Text style={styles.bubbleLabel}>Export</Text>
             </View>
             <View style={[styles.energyBubble, styles.homeBubble]}>
-              <Text style={styles.bubbleValue}>64 kw</Text>
+              <Text style={styles.bubbleValue}>{energyFlowData.home} kw</Text>
               <Text style={styles.bubbleLabel}>Home</Text>
             </View>
             <View style={[styles.energyBubble, styles.produceBubble]}>
-              <Text style={styles.bubbleValue}>3.65 w</Text>
+              <Text style={styles.bubbleValue}>{energyFlowData.produce} w</Text>
               <Text style={styles.bubbleLabel}>Produce</Text>
             </View>
           </View>
@@ -56,7 +56,7 @@ export default function HomeScreen() {
             </View>
             {/* Stored Energy Point */}
             <View style={[styles.energyBubble, styles.storedBubble]}>
-              <Text style={styles.bubbleValue}>129 kw</Text>
+              <Text style={styles.bubbleValue}>{energyFlowData.stored} kw</Text>
               <Text style={styles.bubbleLabel}>Stored</Text>
             </View>
           </View>
@@ -67,14 +67,14 @@ export default function HomeScreen() {
           <View style={styles.chargingHeader}>
             <View>
               <Text style={styles.chargingTitle}>Charging</Text>
-              <Text style={styles.chargingSubtitle}>1h 10 min remained</Text>
+              <Text style={styles.chargingSubtitle}>{batteryData.timeRemaining} remained</Text>
             </View>
             <View style={styles.chargingRight}>
               <Text style={styles.batteryIcon}>⚡</Text>
               <Text style={styles.batteryPercent}>{batteryData.level}%</Text>
             </View>
           </View>
-          <Text style={styles.capacityText}>4500 kw cap</Text>
+          <Text style={styles.capacityText}>{batteryData.capacity} kw cap</Text>
 
           {/* Battery Progress Bar */}
           <View style={styles.batteryBar}>
