@@ -390,7 +390,7 @@ const styles = StyleSheet.create({
   },
   batterySegment: {
     flex: 1,
-    height: 32,
+    height: 48,
     borderRadius: 6,
     backgroundColor: 'rgba(128,128,128,0.2)',
   },

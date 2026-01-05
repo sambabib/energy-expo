@@ -3,7 +3,6 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import Colors from '@/constants/Colors';
 import { useAppContext } from '@/context/AppContext';
 
 function TabBarIcon(props: {
@@ -26,30 +25,35 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        tabBarInactiveTintColor: colorScheme === 'dark' ? '#888' : '#999',
-        tabBarShowLabel: false,
+        tabBarActiveTintColor: '#000',
+        tabBarInactiveTintColor: '#999',
+        tabBarShowLabel: true,
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '500',
+          marginTop: 4,
+        },
         tabBarStyle: {
           position: 'absolute',
-          bottom: 24,
-          left: 24,
-          right: 24,
-          height: 64,
-          backgroundColor: colorScheme === 'dark' ? '#1a1a1a' : '#ffffff',
-          borderRadius: 32,
-          borderTopWidth: 0,
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.15,
-          shadowRadius: 12,
-          elevation: 8,
-          paddingHorizontal: 16,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: 90,
+          backgroundColor: '#fff',
+          borderTopWidth: 1,
+          borderTopColor: 'rgba(0,0,0,0.1)',
+          paddingTop: 8,
+          paddingBottom: 20,
+          paddingHorizontal: 20,
+        },
+        tabBarItemStyle: {
+          paddingVertical: 8,
         },
       }}>
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: 'Dashboard',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name="home" color={color} focused={focused} />
           ),

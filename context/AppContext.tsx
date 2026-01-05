@@ -27,7 +27,7 @@ interface AppContextType {
 const defaultSettings: Settings = {
   accountEnabled: true,
   notifications: false,
-  darkMode: false,
+  darkMode: true,
   biometric: true,
   realTimeMonitoring: true,
   peakUsageAlerts: true,
@@ -39,7 +39,7 @@ const defaultSettings: Settings = {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [colorScheme, setColorScheme] = useState<ColorScheme>('light');
+  const [colorScheme, setColorScheme] = useState<ColorScheme>('dark');
   const [settings, setSettings] = useState<Settings>(defaultSettings);
 
   const toggleColorScheme = () => {
