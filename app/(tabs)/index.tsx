@@ -26,132 +26,138 @@ export default function HomeScreen() {
             </View>
           </View>
 
-          {/* Weather Card */}
-          <Card style={styles.weatherCard}>
-            <View>
-              <Text style={styles.weatherTemp}>Sunny, 32°C</Text>
-              <Text style={styles.weatherDate}>{new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}</Text>
-            </View>
-            <Text style={styles.weatherIcon}>🌤️</Text>
-          </Card>
-
-          {/* Energy Flow Visualization */}
-          <Card style={styles.energyFlowCard}>
-            {/* Connection Lines */}
-            <View style={[StyleSheet.absoluteFill, { zIndex: -1 }]}>
-              {/* Export Line (Red) - Down and Right */}
-              <View style={{
-                position: 'absolute',
-                top: 80,
-                left: 50,
-                width: 2,
-                height: 50,
-                borderLeftWidth: 2,
-                borderColor: '#ef5350',
-                borderStyle: 'dashed',
-              }} />
-              <View style={{
-                position: 'absolute',
-                top: 130,
-                left: 50,
-                right: '50%',
-                height: 2,
-                borderTopWidth: 2,
-                borderColor: '#ef5350',
-                borderStyle: 'dashed',
-              }} />
-              <View style={{
-                position: 'absolute',
-                top: 130,
-                left: '50%',
-                height: 30,
-                borderLeftWidth: 2,
-                borderColor: '#ef5350',
-                borderStyle: 'dashed',
-              }} />
-
-              {/* Home Line (Green) - Straight Down */}
-              <View style={{
-                position: 'absolute',
-                top: 80,
-                left: '50%',
-                marginLeft: -1, // Center the 2px line
-                height: 72,
-                borderLeftWidth: 2,
-                borderColor: '#66bb6a',
-                borderStyle: 'dashed',
-              }} />
-
-              {/* Produce Line (Orange) - Straight Down */}
-              <View style={{
-                position: 'absolute',
-                top: 80,
-                right: 50,
-                height: 72,
-                borderLeftWidth: 2,
-                borderColor: '#ff7043',
-                borderStyle: 'dashed',
-              }} />
+          {/* Combined Weather & Energy Flow Card */}
+          <Card style={styles.combinedCard}>
+            {/* Weather Section */}
+            <View style={styles.weatherSection}>
+              <View>
+                <Text style={styles.weatherTemp}>Sunny, 32°C</Text>
+                <Text style={styles.weatherDate}>{new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}</Text>
+              </View>
+              <Text style={styles.weatherIcon}>🌤️</Text>
             </View>
 
-            {/* Floating Energy Data Points */}
-            <View style={styles.energyPointsRow}>
-              <View style={[styles.energyBubble, styles.exportBubble]}>
-                <Text style={styles.bubbleValue}>{energyFlowData.export} kw</Text>
-                <Text style={styles.bubbleLabel}>Export</Text>
-              </View>
-              <View style={[styles.energyBubble, styles.homeBubble]}>
-                <Text style={styles.bubbleValue}>{energyFlowData.home} kw</Text>
-                <Text style={styles.bubbleLabel}>Home</Text>
-              </View>
-              <View style={[styles.energyBubble, styles.produceBubble]}>
-                <Text style={styles.bubbleValue}>{energyFlowData.produce} w</Text>
-                <Text style={styles.bubbleLabel}>Produce</Text>
-              </View>
-            </View>
+            {/* Separator */}
+            <View style={styles.cardSeparator} />
 
-            {/* House Illustration */}
-            <View style={styles.houseContainer}>
-              {/* Stored Energy Line */}
-              <View style={{
-                position: 'absolute',
-                bottom: 50,
-                left: 50,
-                width: 50,
-                height: 40,
-                zIndex: -1,
-              }}>
+            {/* Energy Flow Section */}
+            <View style={styles.energyFlowSection}>
+              {/* Connection Lines */}
+              <View style={[StyleSheet.absoluteFill, { zIndex: -1 }]}>
+                {/* Export Line (Red) - Down and Right */}
                 <View style={{
                   position: 'absolute',
-                  left: 0,
-                  bottom: 0,
+                  top: 80,
+                  left: 50,
                   width: 2,
-                  height: '100%',
+                  height: 50,
                   borderLeftWidth: 2,
-                  borderColor: '#26a69a',
+                  borderColor: '#ef5350',
                   borderStyle: 'dashed',
                 }} />
                 <View style={{
                   position: 'absolute',
-                  left: 0,
-                  top: 0,
-                  width: '100%',
+                  top: 130,
+                  left: 50,
+                  right: '50%',
                   height: 2,
                   borderTopWidth: 2,
-                  borderColor: '#26a69a',
+                  borderColor: '#ef5350',
+                  borderStyle: 'dashed',
+                }} />
+                <View style={{
+                  position: 'absolute',
+                  top: 130,
+                  left: '50%',
+                  height: 30,
+                  borderLeftWidth: 2,
+                  borderColor: '#ef5350',
+                  borderStyle: 'dashed',
+                }} />
+
+                {/* Home Line (Green) - Straight Down */}
+                <View style={{
+                  position: 'absolute',
+                  top: 80,
+                  left: '50%',
+                  marginLeft: -1, // Center the 2px line
+                  height: 72,
+                  borderLeftWidth: 2,
+                  borderColor: '#66bb6a',
+                  borderStyle: 'dashed',
+                }} />
+
+                {/* Produce Line (Orange) - Straight Down */}
+                <View style={{
+                  position: 'absolute',
+                  top: 80,
+                  right: 50,
+                  height: 72,
+                  borderLeftWidth: 2,
+                  borderColor: '#ff7043',
                   borderStyle: 'dashed',
                 }} />
               </View>
 
-              <Image
-                source={require('@/assets/images/house.png')}
-                style={styles.houseImage}
-                resizeMode="contain"
-              />
-              {/* Stored Energy Point */}
-              <View style={[styles.energyBubble, styles.storedBubble]}>
-                <Text style={styles.bubbleValue}>{energyFlowData.stored} kw</Text>
-                <Text style={styles.bubbleLabel}>Stored</Text>
+              {/* Floating Energy Data Points */}
+              <View style={styles.energyPointsRow}>
+                <View style={[styles.energyBubble, styles.exportBubble]}>
+                  <Text style={styles.bubbleValue}>{energyFlowData.export} kw</Text>
+                  <Text style={styles.bubbleLabel}>Export</Text>
+                </View>
+                <View style={[styles.energyBubble, styles.homeBubble]}>
+                  <Text style={styles.bubbleValue}>{energyFlowData.home} kw</Text>
+                  <Text style={styles.bubbleLabel}>Home</Text>
+                </View>
+                <View style={[styles.energyBubble, styles.produceBubble]}>
+                  <Text style={styles.bubbleValue}>{energyFlowData.produce} w</Text>
+                  <Text style={styles.bubbleLabel}>Produce</Text>
+                </View>
+              </View>
+
+              {/* House Illustration */}
+              <View style={styles.houseContainer}>
+                {/* Stored Energy Line */}
+                <View style={{
+                  position: 'absolute',
+                  bottom: 50,
+                  left: 50,
+                  width: 50,
+                  height: 40,
+                  zIndex: -1,
+                }}>
+                  <View style={{
+                    position: 'absolute',
+                    left: 0,
+                    bottom: 0,
+                    width: 2,
+                    height: '100%',
+                    borderLeftWidth: 2,
+                    borderColor: '#26a69a',
+                    borderStyle: 'dashed',
+                  }} />
+                  <View style={{
+                    position: 'absolute',
+                    left: 0,
+                    top: 0,
+                    width: '100%',
+                    height: 2,
+                    borderTopWidth: 2,
+                    borderColor: '#26a69a',
+                    borderStyle: 'dashed',
+                  }} />
+                </View>
+
+                <Image
+                  source={require('@/assets/images/house.png')}
+                  style={styles.houseImage}
+                  resizeMode="contain"
+                />
+                {/* Stored Energy Point */}
+                <View style={[styles.energyBubble, styles.storedBubble]}>
+                  <Text style={styles.bubbleValue}>{energyFlowData.stored} kw</Text>
+                  <Text style={styles.bubbleLabel}>Stored</Text>
+                </View>
               </View>
             </View>
           </Card>
@@ -281,11 +287,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(128,128,128,0.2)',
   },
-  weatherCard: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
   weatherTemp: {
     fontSize: 20,
     fontWeight: '600',
@@ -297,9 +298,6 @@ const styles = StyleSheet.create({
   },
   weatherIcon: {
     fontSize: 40,
-  },
-  energyFlowCard: {
-    // Card styles are handled by the component
   },
   energyPointsRow: {
     flexDirection: 'row',
@@ -450,5 +448,22 @@ const styles = StyleSheet.create({
   },
   arrowIcon: {
     transform: [{ rotate: '45deg' }],
+  },
+  combinedCard: {
+    padding: 0,
+    overflow: 'hidden',
+  },
+  weatherSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+  },
+  cardSeparator: {
+    height: 1,
+    backgroundColor: 'rgba(128,128,128,0.2)',
+  },
+  energyFlowSection: {
+    padding: 20,
   },
 });
