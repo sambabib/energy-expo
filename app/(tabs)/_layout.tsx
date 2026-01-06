@@ -1,7 +1,7 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { useAppContext } from '@/context/AppContext';
 
@@ -11,11 +11,7 @@ function TabBarIcon(props: {
   focused: boolean;
 }) {
   const { focused, ...rest } = props;
-  return (
-    <View style={[styles.iconContainer, focused && styles.iconContainerActive]}>
-      <FontAwesome size={22} {...rest} />
-    </View>
-  );
+  return <FontAwesome size={22} {...rest} />;
 }
 
 export default function TabLayout() {
@@ -25,8 +21,8 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#000',
-        tabBarInactiveTintColor: '#999',
+        tabBarActiveTintColor: '#e39b65',
+        tabBarInactiveTintColor: '#888',
         tabBarShowLabel: true,
         tabBarLabelStyle: {
           fontSize: 12,
@@ -39,12 +35,13 @@ export default function TabLayout() {
           left: 0,
           right: 0,
           height: 90,
-          backgroundColor: '#fff',
-          borderTopWidth: 1,
-          borderTopColor: 'rgba(0,0,0,0.1)',
+          backgroundColor: colorScheme === 'dark' ? '#000' : '#fff',
+          borderTopWidth: 0,
           paddingTop: 8,
           paddingBottom: 20,
           paddingHorizontal: 20,
+          elevation: 0,
+          shadowOpacity: 0,
         },
         tabBarItemStyle: {
           paddingVertical: 8,
@@ -81,15 +78,4 @@ export default function TabLayout() {
   );
 }
 
-const styles = StyleSheet.create({
-  iconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  iconContainerActive: {
-    backgroundColor: 'rgba(76, 175, 80, 0.15)',
-  },
-});
+const styles = StyleSheet.create({});

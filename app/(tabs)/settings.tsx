@@ -1,144 +1,150 @@
-import { Text, View } from '@/components/Themed';
+import { Text } from '@/components/Themed';
 import { useAppContext } from '@/context/AppContext';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { ScrollView, StyleSheet, Switch, TouchableOpacity } from 'react-native';
+import { ScrollView, StyleSheet, Switch, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function SettingsScreen() {
-  const { settings, updateSetting } = useAppContext();
+  const { settings, updateSetting, colorScheme } = useAppContext();
 
   return (
-    <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
-      <View style={styles.container}>
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity style={styles.backButton}>
-            <FontAwesome name="chevron-left" size={18} color="#333" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Settings</Text>
-          <View style={styles.headerSpacer} />
-        </View>
-
-        {/* Account Section */}
-        <Text style={styles.sectionTitle}>Account</Text>
-
-        <View style={styles.settingRow}>
-          <Text style={styles.settingLabel}>Account</Text>
-          <Switch
-            value={settings.accountEnabled}
-            onValueChange={(value) => updateSetting('accountEnabled', value)}
-            trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
-            thumbColor="#fff"
-          />
-        </View>
-        <View style={styles.divider} />
-
-        <View style={styles.settingRow}>
-          <Text style={styles.settingLabel}>Notifications</Text>
-          <Switch
-            value={settings.notifications}
-            onValueChange={(value) => updateSetting('notifications', value)}
-            trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
-            thumbColor="#fff"
-          />
-        </View>
-        <View style={styles.divider} />
-
-        <View style={styles.settingRow}>
-          <Text style={styles.settingLabel}>Dark Mode</Text>
-          <Switch
-            value={settings.darkMode}
-            onValueChange={(value) => updateSetting('darkMode', value)}
-            trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
-            thumbColor="#fff"
-          />
-        </View>
-        <View style={styles.divider} />
-
-        <View style={styles.settingRow}>
-          <Text style={styles.settingLabel}>Biometric</Text>
-          <Switch
-            value={settings.biometric}
-            onValueChange={(value) => updateSetting('biometric', value)}
-            trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
-            thumbColor="#fff"
-          />
-        </View>
-
-        {/* Energy Monitoring Section */}
-        <Text style={styles.sectionTitle}>Energy Monitoring</Text>
-
-        <View style={styles.settingRow}>
-          <Text style={styles.settingLabel}>Real-time Monitoring</Text>
-          <Switch
-            value={settings.realTimeMonitoring}
-            onValueChange={(value) => updateSetting('realTimeMonitoring', value)}
-            trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
-            thumbColor="#fff"
-          />
-        </View>
-        <View style={styles.divider} />
-
-        <View style={styles.settingRow}>
-          <View style={styles.settingLabelContainer}>
-            <Text style={styles.settingLabel}>Peak Usage Alerts</Text>
-            <Text style={styles.settingDescription}>Notify when usage exceeds threshold</Text>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: colorScheme === 'dark' ? '#000' : '#fff' }]}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+        <View style={styles.container}>
+          {/* Header */}
+          <View style={styles.header}>
+            <TouchableOpacity style={styles.backButton}>
+              <FontAwesome name="chevron-left" size={18} color="#333" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Settings</Text>
+            <View style={styles.headerSpacer} />
           </View>
-          <Switch
-            value={settings.peakUsageAlerts}
-            onValueChange={(value) => updateSetting('peakUsageAlerts', value)}
-            trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
-            thumbColor="#fff"
-          />
+
+          {/* Account Section */}
+          <Text style={styles.sectionTitle}>Account</Text>
+
+          <View style={styles.settingRow}>
+            <Text style={styles.settingLabel}>Account</Text>
+            <Switch
+              value={settings.accountEnabled}
+              onValueChange={(value) => updateSetting('accountEnabled', value)}
+              trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
+              thumbColor="#fff"
+            />
+          </View>
+          <View style={styles.divider} />
+
+          <View style={styles.settingRow}>
+            <Text style={styles.settingLabel}>Notifications</Text>
+            <Switch
+              value={settings.notifications}
+              onValueChange={(value) => updateSetting('notifications', value)}
+              trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
+              thumbColor="#fff"
+            />
+          </View>
+          <View style={styles.divider} />
+
+          <View style={styles.settingRow}>
+            <Text style={styles.settingLabel}>Dark Mode</Text>
+            <Switch
+              value={settings.darkMode}
+              onValueChange={(value) => updateSetting('darkMode', value)}
+              trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
+              thumbColor="#fff"
+            />
+          </View>
+          <View style={styles.divider} />
+
+          <View style={styles.settingRow}>
+            <Text style={styles.settingLabel}>Biometric</Text>
+            <Switch
+              value={settings.biometric}
+              onValueChange={(value) => updateSetting('biometric', value)}
+              trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
+              thumbColor="#fff"
+            />
+          </View>
+
+          {/* Energy Monitoring Section */}
+          <Text style={styles.sectionTitle}>Energy Monitoring</Text>
+
+          <View style={styles.settingRow}>
+            <Text style={styles.settingLabel}>Real-time Monitoring</Text>
+            <Switch
+              value={settings.realTimeMonitoring}
+              onValueChange={(value) => updateSetting('realTimeMonitoring', value)}
+              trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
+              thumbColor="#fff"
+            />
+          </View>
+          <View style={styles.divider} />
+
+          <View style={styles.settingRow}>
+            <View style={styles.settingLabelContainer}>
+              <Text style={styles.settingLabel}>Peak Usage Alerts</Text>
+              <Text style={styles.settingDescription}>Notify when usage exceeds threshold</Text>
+            </View>
+            <Switch
+              value={settings.peakUsageAlerts}
+              onValueChange={(value) => updateSetting('peakUsageAlerts', value)}
+              trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
+              thumbColor="#fff"
+            />
+          </View>
+          <View style={styles.divider} />
+
+          <View style={styles.settingRow}>
+            <Text style={styles.settingLabel}>Solar Panel Tracking</Text>
+            <Switch
+              value={settings.solarTracking}
+              onValueChange={(value) => updateSetting('solarTracking', value)}
+              trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
+              thumbColor="#fff"
+            />
+          </View>
+
+          {/* Privacy Section */}
+          <Text style={styles.sectionTitle}>Privacy</Text>
+
+          <View style={styles.settingRow}>
+            <Text style={styles.settingLabel}>Location Service</Text>
+            <Switch
+              value={settings.locationService}
+              onValueChange={(value) => updateSetting('locationService', value)}
+              trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
+              thumbColor="#fff"
+            />
+          </View>
+          <View style={styles.divider} />
+
+          <View style={styles.settingRow}>
+            <Text style={styles.settingLabel}>Data Collection</Text>
+            <Switch
+              value={settings.dataCollection}
+              onValueChange={(value) => updateSetting('dataCollection', value)}
+              trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
+              thumbColor="#fff"
+            />
+          </View>
+
+          {/* Clear Data Button */}
+          <TouchableOpacity style={styles.clearButton}>
+            <Text style={styles.clearButtonText}>Clear All Data</Text>
+          </TouchableOpacity>
+
+          {/* App Version */}
+          <Text style={styles.versionText}>Energy App v1.0.0</Text>
         </View>
-        <View style={styles.divider} />
-
-        <View style={styles.settingRow}>
-          <Text style={styles.settingLabel}>Solar Panel Tracking</Text>
-          <Switch
-            value={settings.solarTracking}
-            onValueChange={(value) => updateSetting('solarTracking', value)}
-            trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
-            thumbColor="#fff"
-          />
-        </View>
-
-        {/* Privacy Section */}
-        <Text style={styles.sectionTitle}>Privacy</Text>
-
-        <View style={styles.settingRow}>
-          <Text style={styles.settingLabel}>Location Service</Text>
-          <Switch
-            value={settings.locationService}
-            onValueChange={(value) => updateSetting('locationService', value)}
-            trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
-            thumbColor="#fff"
-          />
-        </View>
-        <View style={styles.divider} />
-
-        <View style={styles.settingRow}>
-          <Text style={styles.settingLabel}>Data Collection</Text>
-          <Switch
-            value={settings.dataCollection}
-            onValueChange={(value) => updateSetting('dataCollection', value)}
-            trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
-            thumbColor="#fff"
-          />
-        </View>
-
-        {/* Clear Data Button */}
-        <TouchableOpacity style={styles.clearButton}>
-          <Text style={styles.clearButtonText}>Clear All Data</Text>
-        </TouchableOpacity>
-
-        {/* App Version */}
-        <Text style={styles.versionText}>Energy App v1.0.0</Text>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
   scrollView: {
     flex: 1,
   },

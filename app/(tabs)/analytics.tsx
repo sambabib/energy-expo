@@ -1,198 +1,207 @@
-import { Text, View } from '@/components/Themed';
+import { Card } from '@/components/Card';
+import { Text } from '@/components/Themed';
+import { useAppContext } from '@/context/AppContext';
 import { analyticsConsumptionData, co2Saved, dayLabels, performanceData } from '@/services/mockData';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useState } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const PERIODS = ['24 hour', 'Weekly', 'Monthly', '6 months'] as const;
 type Period = typeof PERIODS[number];
 
 export default function AnalyticsScreen() {
+  const { colorScheme } = useAppContext();
   const [selectedPeriod, setSelectedPeriod] = useState<Period>('Weekly');
   const maxBarHeight = 140;
 
   return (
-    <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
-      <View style={styles.container}>
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Analytics</Text>
-          <View style={styles.menuButton}>
-            <FontAwesome name="ellipsis-h" size={20} color="#666" />
-          </View>
-        </View>
-
-        {/* Period Selector */}
-        <View style={styles.periodSelector}>
-          {PERIODS.map((period) => (
-            <View
-              key={period}
-              style={[
-                styles.periodButton,
-                selectedPeriod === period && styles.periodButtonActive,
-              ]}
-              onTouchEnd={() => setSelectedPeriod(period)}
-            >
-              <Text
-                style={[
-                  styles.periodButtonText,
-                  selectedPeriod === period && styles.periodButtonTextActive,
-                ]}
-              >
-                {period}
-              </Text>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: colorScheme === 'dark' ? '#000' : '#fff' }]}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+        <View style={styles.container}>
+          {/* Header */}
+          <View style={styles.header}>
+            <Text style={styles.headerTitle}>Analytics</Text>
+            <View style={styles.menuButton}>
+              <FontAwesome name="ellipsis-h" size={20} color="#666" />
             </View>
-          ))}
-        </View>
+          </View>
 
-        {/* Consumption Overview Card */}
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Consumption overview</Text>
-
-          {/* Stacked Bar Chart */}
-          <View style={styles.stackedChart}>
-            {analyticsConsumptionData.map((item, index) => (
-              <View key={index} style={styles.stackedBarContainer}>
-                <View style={styles.stackedBar}>
-                  {/* Grid (top - striped) */}
-                  {item.grid > 0 && (
-                    <View style={[styles.barSegment, styles.gridSegment, { flex: item.grid }]}>
-                      <Text style={styles.segmentLabel}>{item.grid}%</Text>
-                    </View>
-                  )}
-                  {/* Battery (middle) */}
-                  {item.battery > 0 && (
-                    <View style={[styles.barSegment, styles.batterySegment, { flex: item.battery }]}>
-                      <Text style={styles.segmentLabel}>{item.battery}%</Text>
-                    </View>
-                  )}
-                  {/* Solar (bottom) */}
-                  <View style={[styles.barSegment, styles.solarSegment, { flex: item.solar }]}>
-                    <Text style={styles.segmentLabel}>{item.solar}%</Text>
-                  </View>
-                </View>
+          {/* Period Selector */}
+          <View style={styles.periodSelector}>
+            {PERIODS.map((period) => (
+              <View
+                key={period}
+                style={[
+                  styles.periodButton,
+                  selectedPeriod === period && styles.periodButtonActive,
+                ]}
+                onTouchEnd={() => setSelectedPeriod(period)}
+              >
+                <Text
+                  style={[
+                    styles.periodButtonText,
+                    selectedPeriod === period && styles.periodButtonTextActive,
+                  ]}
+                >
+                  {period}
+                </Text>
               </View>
             ))}
           </View>
 
-          {/* Legend */}
-          <View style={styles.legend}>
-            <View style={styles.legendItem}>
-              <View style={[styles.legendDot, styles.solarDot]} />
-              <Text style={styles.legendText}>Direct Solar</Text>
+          {/* Consumption Overview Card */}
+          <Card style={styles.card}>
+            <Text style={styles.cardTitle}>Consumption overview</Text>
+
+            {/* Stacked Bar Chart */}
+            <View style={styles.stackedChart}>
+              {analyticsConsumptionData.map((item, index) => (
+                <View key={index} style={styles.stackedBarContainer}>
+                  <View style={styles.stackedBar}>
+                    {/* Grid (top - striped) */}
+                    {item.grid > 0 && (
+                      <View style={[styles.barSegment, styles.gridSegment, { flex: item.grid }]}>
+                        <Text style={styles.segmentLabel}>{item.grid}%</Text>
+                      </View>
+                    )}
+                    {/* Battery (middle) */}
+                    {item.battery > 0 && (
+                      <View style={[styles.barSegment, styles.batterySegment, { flex: item.battery }]}>
+                        <Text style={styles.segmentLabel}>{item.battery}%</Text>
+                      </View>
+                    )}
+                    {/* Solar (bottom) */}
+                    <View style={[styles.barSegment, styles.solarSegment, { flex: item.solar }]}>
+                      <Text style={styles.segmentLabel}>{item.solar}%</Text>
+                    </View>
+                  </View>
+                </View>
+              ))}
             </View>
-            <View style={styles.legendItem}>
-              <View style={[styles.legendDot, styles.batteryDot]} />
-              <Text style={styles.legendText}>Battery</Text>
+
+            {/* Legend */}
+            <View style={styles.legend}>
+              <View style={styles.legendItem}>
+                <View style={[styles.legendDot, styles.solarDot]} />
+                <Text style={styles.legendText}>Direct Solar</Text>
+              </View>
+              <View style={styles.legendItem}>
+                <View style={[styles.legendDot, styles.batteryDot]} />
+                <Text style={styles.legendText}>Battery</Text>
+              </View>
+              <View style={styles.legendItem}>
+                <View style={[styles.legendDot, styles.gridDot]} />
+                <Text style={styles.legendText}>Grid</Text>
+              </View>
             </View>
-            <View style={styles.legendItem}>
-              <View style={[styles.legendDot, styles.gridDot]} />
-              <Text style={styles.legendText}>Grid</Text>
+          </Card>
+
+          {/* CO2 Emissions Card */}
+          <Card style={styles.emissionsCard}>
+            <View style={styles.emissionsIcon}>
+              <FontAwesome name="recycle" size={24} color="#4CAF50" />
             </View>
-          </View>
+            <View style={styles.emissionsContent}>
+              <Text style={styles.emissionsValue}>{co2Saved} kg CO2 emissions saved</Text>
+              <Text style={styles.emissionsSubtext}>Carbon footprint offset</Text>
+            </View>
+          </Card>
+
+          {/* Performance Metrics Card */}
+          <Card style={styles.card}>
+            <Text style={styles.cardTitle}>Performance Metrics</Text>
+
+            {/* Line Chart */}
+            <View style={styles.lineChartContainer}>
+              {/* Y-axis labels (left - Energy) */}
+              <View style={styles.yAxisLeft}>
+                <Text style={styles.yAxisLabel}>400</Text>
+                <Text style={styles.yAxisLabel}>200</Text>
+                <Text style={styles.yAxisLabel}>0</Text>
+              </View>
+
+              {/* Chart Area */}
+              <View style={styles.lineChart}>
+                {/* Grid lines */}
+                <View style={styles.gridLines}>
+                  <View style={styles.gridLine} />
+                  <View style={styles.gridLine} />
+                  <View style={styles.gridLine} />
+                </View>
+
+                {/* Energy Line (green) */}
+                <View style={styles.lineContainer}>
+                  {performanceData.energy.map((value, index) => (
+                    <View
+                      key={`energy-${index}`}
+                      style={[
+                        styles.dataPoint,
+                        styles.energyPoint,
+                        {
+                          bottom: (value / 500) * 120,
+                          left: `${(index / 6) * 100}%`,
+                        },
+                      ]}
+                    />
+                  ))}
+                </View>
+
+                {/* Efficiency Line (blue) */}
+                <View style={styles.lineContainer}>
+                  {performanceData.efficiency.map((value, index) => (
+                    <View
+                      key={`efficiency-${index}`}
+                      style={[
+                        styles.dataPoint,
+                        styles.efficiencyPoint,
+                        {
+                          bottom: (value / 100) * 120,
+                          left: `${(index / 6) * 100}%`,
+                        },
+                      ]}
+                    />
+                  ))}
+                </View>
+
+                {/* X-axis labels */}
+                <View style={styles.xAxisLabels}>
+                  {dayLabels.map((label, index) => (
+                    <Text key={index} style={styles.xAxisLabel}>{label}</Text>
+                  ))}
+                </View>
+              </View>
+
+              {/* Y-axis labels (right - Efficiency) */}
+              <View style={styles.yAxisRight}>
+                <Text style={styles.yAxisLabel}>100</Text>
+                <Text style={styles.yAxisLabel}>50</Text>
+                <Text style={styles.yAxisLabel}>0</Text>
+              </View>
+            </View>
+
+            {/* Chart Legend */}
+            <View style={styles.chartLegend}>
+              <View style={styles.legendItem}>
+                <View style={[styles.legendLine, styles.energyLine]} />
+                <Text style={styles.legendText}>Energy (Kwh)</Text>
+              </View>
+              <View style={styles.legendItem}>
+                <View style={[styles.legendLine, styles.efficiencyLine]} />
+                <Text style={styles.legendText}>Efficiency (%)</Text>
+              </View>
+            </View>
+          </Card>
         </View>
-
-        {/* CO2 Emissions Card */}
-        <View style={styles.emissionsCard}>
-          <View style={styles.emissionsIcon}>
-            <FontAwesome name="recycle" size={24} color="#4CAF50" />
-          </View>
-          <View style={styles.emissionsContent}>
-            <Text style={styles.emissionsValue}>{co2Saved} kg CO2 emissions saved</Text>
-            <Text style={styles.emissionsSubtext}>Carbon footprint offset</Text>
-          </View>
-        </View>
-
-        {/* Performance Metrics Card */}
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Performance Metrics</Text>
-
-          {/* Line Chart */}
-          <View style={styles.lineChartContainer}>
-            {/* Y-axis labels (left - Energy) */}
-            <View style={styles.yAxisLeft}>
-              <Text style={styles.yAxisLabel}>400</Text>
-              <Text style={styles.yAxisLabel}>200</Text>
-              <Text style={styles.yAxisLabel}>0</Text>
-            </View>
-
-            {/* Chart Area */}
-            <View style={styles.lineChart}>
-              {/* Grid lines */}
-              <View style={styles.gridLines}>
-                <View style={styles.gridLine} />
-                <View style={styles.gridLine} />
-                <View style={styles.gridLine} />
-              </View>
-
-              {/* Energy Line (green) */}
-              <View style={styles.lineContainer}>
-                {performanceData.energy.map((value, index) => (
-                  <View
-                    key={`energy-${index}`}
-                    style={[
-                      styles.dataPoint,
-                      styles.energyPoint,
-                      {
-                        bottom: (value / 500) * 120,
-                        left: `${(index / 6) * 100}%`,
-                      },
-                    ]}
-                  />
-                ))}
-              </View>
-
-              {/* Efficiency Line (blue) */}
-              <View style={styles.lineContainer}>
-                {performanceData.efficiency.map((value, index) => (
-                  <View
-                    key={`efficiency-${index}`}
-                    style={[
-                      styles.dataPoint,
-                      styles.efficiencyPoint,
-                      {
-                        bottom: (value / 100) * 120,
-                        left: `${(index / 6) * 100}%`,
-                      },
-                    ]}
-                  />
-                ))}
-              </View>
-
-              {/* X-axis labels */}
-              <View style={styles.xAxisLabels}>
-                {dayLabels.map((label, index) => (
-                  <Text key={index} style={styles.xAxisLabel}>{label}</Text>
-                ))}
-              </View>
-            </View>
-
-            {/* Y-axis labels (right - Efficiency) */}
-            <View style={styles.yAxisRight}>
-              <Text style={styles.yAxisLabel}>100</Text>
-              <Text style={styles.yAxisLabel}>50</Text>
-              <Text style={styles.yAxisLabel}>0</Text>
-            </View>
-          </View>
-
-          {/* Chart Legend */}
-          <View style={styles.chartLegend}>
-            <View style={styles.legendItem}>
-              <View style={[styles.legendLine, styles.energyLine]} />
-              <Text style={styles.legendText}>Energy (Kwh)</Text>
-            </View>
-            <View style={styles.legendItem}>
-              <View style={[styles.legendLine, styles.efficiencyLine]} />
-              <Text style={styles.legendText}>Efficiency (%)</Text>
-            </View>
-          </View>
-        </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
   scrollView: {
     flex: 1,
   },

@@ -14,7 +14,7 @@ export const energyFlowData = {
 };
 
 export const batteryData = {
-  level: 82,
+  level: 64,
   timeRemaining: '1h 10 min',
   capacity: 4500,
 };
