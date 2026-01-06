@@ -1,10 +1,13 @@
 import { Card } from '@/components/Card';
+import { ConsumptionChart } from '@/components/ConsumptionChart';
+import { PerformanceChart } from '@/components/PerformanceChart';
 import { Text } from '@/components/Themed';
 import { useAppContext } from '@/context/AppContext';
-import { analyticsConsumptionData, co2Saved, dayLabels, performanceData } from '@/services/mockData';
+import { co2Saved } from '@/services/mockData';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const PERIODS = ['24 hour', 'Weekly', 'Monthly', '6 months'] as const;
@@ -13,7 +16,7 @@ type Period = typeof PERIODS[number];
 export default function AnalyticsScreen() {
   const { colorScheme } = useAppContext();
   const [selectedPeriod, setSelectedPeriod] = useState<Period>('Weekly');
-  const maxBarHeight = 140;
+  const router = useRouter();
 
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: colorScheme === 'dark' ? '#000' : '#fff' }]}>
@@ -51,51 +54,15 @@ export default function AnalyticsScreen() {
           </View>
 
           {/* Consumption Overview Card */}
-          <Card style={styles.card}>
-            <Text style={styles.cardTitle}>Consumption overview</Text>
-
-            {/* Stacked Bar Chart */}
-            <View style={styles.stackedChart}>
-              {analyticsConsumptionData.map((item, index) => (
-                <View key={index} style={styles.stackedBarContainer}>
-                  <View style={styles.stackedBar}>
-                    {/* Grid (top - striped) */}
-                    {item.grid > 0 && (
-                      <View style={[styles.barSegment, styles.gridSegment, { flex: item.grid }]}>
-                        <Text style={styles.segmentLabel}>{item.grid}%</Text>
-                      </View>
-                    )}
-                    {/* Battery (middle) */}
-                    {item.battery > 0 && (
-                      <View style={[styles.barSegment, styles.batterySegment, { flex: item.battery }]}>
-                        <Text style={styles.segmentLabel}>{item.battery}%</Text>
-                      </View>
-                    )}
-                    {/* Solar (bottom) */}
-                    <View style={[styles.barSegment, styles.solarSegment, { flex: item.solar }]}>
-                      <Text style={styles.segmentLabel}>{item.solar}%</Text>
-                    </View>
-                  </View>
-                </View>
-              ))}
-            </View>
-
-            {/* Legend */}
-            <View style={styles.legend}>
-              <View style={styles.legendItem}>
-                <View style={[styles.legendDot, styles.solarDot]} />
-                <Text style={styles.legendText}>Direct Solar</Text>
-              </View>
-              <View style={styles.legendItem}>
-                <View style={[styles.legendDot, styles.batteryDot]} />
-                <Text style={styles.legendText}>Battery</Text>
-              </View>
-              <View style={styles.legendItem}>
-                <View style={[styles.legendDot, styles.gridDot]} />
-                <Text style={styles.legendText}>Grid</Text>
-              </View>
-            </View>
-          </Card>
+          <TouchableOpacity
+            onPress={() => router.push({ pathname: '/full-screen-chart', params: { type: 'consumption', title: 'Consumption Overview' } })}
+            activeOpacity={0.9}
+          >
+            <Card style={styles.card}>
+              <Text style={styles.cardTitle}>Consumption overview</Text>
+              <ConsumptionChart />
+            </Card>
+          </TouchableOpacity>
 
           {/* CO2 Emissions Card */}
           <Card style={styles.emissionsCard}>
@@ -109,89 +76,15 @@ export default function AnalyticsScreen() {
           </Card>
 
           {/* Performance Metrics Card */}
-          <Card style={styles.card}>
-            <Text style={styles.cardTitle}>Performance Metrics</Text>
-
-            {/* Line Chart */}
-            <View style={styles.lineChartContainer}>
-              {/* Y-axis labels (left - Energy) */}
-              <View style={styles.yAxisLeft}>
-                <Text style={styles.yAxisLabel}>400</Text>
-                <Text style={styles.yAxisLabel}>200</Text>
-                <Text style={styles.yAxisLabel}>0</Text>
-              </View>
-
-              {/* Chart Area */}
-              <View style={styles.lineChart}>
-                {/* Grid lines */}
-                <View style={styles.gridLines}>
-                  <View style={styles.gridLine} />
-                  <View style={styles.gridLine} />
-                  <View style={styles.gridLine} />
-                </View>
-
-                {/* Energy Line (green) */}
-                <View style={styles.lineContainer}>
-                  {performanceData.energy.map((value, index) => (
-                    <View
-                      key={`energy-${index}`}
-                      style={[
-                        styles.dataPoint,
-                        styles.energyPoint,
-                        {
-                          bottom: (value / 500) * 120,
-                          left: `${(index / 6) * 100}%`,
-                        },
-                      ]}
-                    />
-                  ))}
-                </View>
-
-                {/* Efficiency Line (blue) */}
-                <View style={styles.lineContainer}>
-                  {performanceData.efficiency.map((value, index) => (
-                    <View
-                      key={`efficiency-${index}`}
-                      style={[
-                        styles.dataPoint,
-                        styles.efficiencyPoint,
-                        {
-                          bottom: (value / 100) * 120,
-                          left: `${(index / 6) * 100}%`,
-                        },
-                      ]}
-                    />
-                  ))}
-                </View>
-
-                {/* X-axis labels */}
-                <View style={styles.xAxisLabels}>
-                  {dayLabels.map((label, index) => (
-                    <Text key={index} style={styles.xAxisLabel}>{label}</Text>
-                  ))}
-                </View>
-              </View>
-
-              {/* Y-axis labels (right - Efficiency) */}
-              <View style={styles.yAxisRight}>
-                <Text style={styles.yAxisLabel}>100</Text>
-                <Text style={styles.yAxisLabel}>50</Text>
-                <Text style={styles.yAxisLabel}>0</Text>
-              </View>
-            </View>
-
-            {/* Chart Legend */}
-            <View style={styles.chartLegend}>
-              <View style={styles.legendItem}>
-                <View style={[styles.legendLine, styles.energyLine]} />
-                <Text style={styles.legendText}>Energy (Kwh)</Text>
-              </View>
-              <View style={styles.legendItem}>
-                <View style={[styles.legendLine, styles.efficiencyLine]} />
-                <Text style={styles.legendText}>Efficiency (%)</Text>
-              </View>
-            </View>
-          </Card>
+          <TouchableOpacity
+            onPress={() => router.push({ pathname: '/full-screen-chart', params: { type: 'performance', title: 'Performance Metrics' } })}
+            activeOpacity={0.9}
+          >
+            <Card style={styles.card}>
+              <Text style={styles.cardTitle}>Performance Metrics</Text>
+              <PerformanceChart />
+            </Card>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -269,69 +162,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 20,
   },
-  stackedChart: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    height: 160,
-    marginBottom: 20,
-  },
-  stackedBarContainer: {
-    flex: 1,
-    paddingHorizontal: 4,
-  },
-  stackedBar: {
-    flex: 1,
-    borderRadius: 8,
-    overflow: 'hidden',
-    flexDirection: 'column',
-  },
-  barSegment: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    minHeight: 20,
-  },
-  solarSegment: {
-    backgroundColor: '#4CAF50',
-  },
-  batterySegment: {
-    backgroundColor: '#CDDC39',
-  },
-  gridSegment: {
-    backgroundColor: '#E0E0E0',
-  },
-  segmentLabel: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: '#333',
-  },
-  legend: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 20,
-  },
-  legendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  legendDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 3,
-  },
-  solarDot: {
-    backgroundColor: '#4CAF50',
-  },
-  batteryDot: {
-    backgroundColor: '#CDDC39',
-  },
-  gridDot: {
-    backgroundColor: '#E0E0E0',
-  },
-  legendText: {
-    fontSize: 12,
-    opacity: 0.7,
-  },
   emissionsCard: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -359,90 +189,5 @@ const styles = StyleSheet.create({
     fontSize: 13,
     opacity: 0.6,
     marginTop: 2,
-  },
-  lineChartContainer: {
-    flexDirection: 'row',
-    height: 160,
-    marginBottom: 16,
-  },
-  yAxisLeft: {
-    width: 30,
-    justifyContent: 'space-between',
-    paddingBottom: 24,
-  },
-  yAxisRight: {
-    width: 30,
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
-    paddingBottom: 24,
-  },
-  yAxisLabel: {
-    fontSize: 10,
-    opacity: 0.5,
-  },
-  lineChart: {
-    flex: 1,
-    position: 'relative',
-    marginHorizontal: 8,
-  },
-  gridLines: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 24,
-    justifyContent: 'space-between',
-  },
-  gridLine: {
-    height: 1,
-    backgroundColor: 'rgba(128,128,128,0.2)',
-  },
-  lineContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 24,
-  },
-  dataPoint: {
-    position: 'absolute',
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginLeft: -4,
-  },
-  energyPoint: {
-    backgroundColor: '#4CAF50',
-  },
-  efficiencyPoint: {
-    backgroundColor: '#7986CB',
-  },
-  xAxisLabels: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  xAxisLabel: {
-    fontSize: 10,
-    opacity: 0.5,
-  },
-  chartLegend: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 24,
-  },
-  legendLine: {
-    width: 16,
-    height: 3,
-    borderRadius: 2,
-  },
-  energyLine: {
-    backgroundColor: '#4CAF50',
-  },
-  efficiencyLine: {
-    backgroundColor: '#7986CB',
   },
 });
