@@ -2,29 +2,49 @@ import { analyticsConsumptionData } from '@/services/mockData';
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
 export function ConsumptionChart({ style, chartHeight = 160 }: { style?: StyleProp<ViewStyle>; chartHeight?: number }) {
+  // Find max value to scale bars relative to the chart height
+  // We treat the numbers as values now.
+  // We need to find the max of any individual bar segment across all data points to scale properly.
+  const allValues = analyticsConsumptionData.flatMap(d => [d.solar, d.battery, d.grid]);
+  const maxValue = Math.max(...allValues, 100); // Default to at least 100 if values are small
+
   return (
     <View style={style}>
-      {/* Stacked Bar Chart */}
-      <View style={[styles.stackedChart, { height: chartHeight }]}>
+      {/* Grouped Bar Chart */}
+      <View style={[styles.groupedChart, { height: chartHeight }]}>
         {analyticsConsumptionData.map((item, index) => (
-          <View key={index} style={styles.stackedBarContainer}>
-            <View style={styles.stackedBar}>
-              {/* Grid (top - striped) */}
-              {item.grid > 0 && (
-                <View style={[styles.barSegment, styles.gridSegment, { flex: item.grid }]}>
-                  <Text style={styles.segmentLabel}>{item.grid}%</Text>
-                </View>
-              )}
-              {/* Battery (middle) */}
-              {item.battery > 0 && (
-                <View style={[styles.barSegment, styles.batterySegment, { flex: item.battery }]}>
-                  <Text style={styles.segmentLabel}>{item.battery}%</Text>
-                </View>
-              )}
-              {/* Solar (bottom) */}
-              <View style={[styles.barSegment, styles.solarSegment, { flex: item.solar }]}>
-                <Text style={styles.segmentLabel}>{item.solar}%</Text>
-              </View>
+          <View key={index} style={styles.groupContainer}>
+            {/* Solar Bar */}
+            <View style={styles.barTrack}>
+              <View
+                style={[
+                  styles.bar,
+                  styles.solarBar,
+                  { height: `${(item.solar / maxValue) * 100}%` }
+                ]}
+              />
+            </View>
+
+            {/* Battery Bar */}
+            <View style={styles.barTrack}>
+              <View
+                style={[
+                  styles.bar,
+                  styles.batteryBar,
+                  { height: `${(item.battery / maxValue) * 100}%` }
+                ]}
+              />
+            </View>
+
+            {/* Grid Bar */}
+            <View style={styles.barTrack}>
+              <View
+                style={[
+                  styles.bar,
+                  styles.gridBar,
+                  { height: `${(item.grid / maxValue) * 100}%` }
+                ]}
+              />
             </View>
           </View>
         ))}
@@ -50,40 +70,43 @@ export function ConsumptionChart({ style, chartHeight = 160 }: { style?: StylePr
 }
 
 const styles = StyleSheet.create({
-  stackedChart: {
+  groupedChart: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'flex-end',
     height: 160,
     marginBottom: 20,
   },
-  stackedBarContainer: {
+  groupContainer: {
     flex: 1,
-    paddingHorizontal: 4,
-  },
-  stackedBar: {
-    flex: 1,
-    borderRadius: 8,
-    overflow: 'hidden',
-    flexDirection: 'column',
-  },
-  barSegment: {
+    flexDirection: 'row',
     justifyContent: 'center',
+    alignItems: 'flex-end',
+    gap: 2, // Gap between bars in a group
+    height: '100%',
+  },
+  barTrack: {
+    width: 6, // Reduced width as requested
+    height: '100%',
+    justifyContent: 'flex-end',
     alignItems: 'center',
-    minHeight: 20,
   },
-  solarSegment: {
-    backgroundColor: '#4CAF50',
+  bar: {
+    width: '100%',
+    borderRadius: 3,
+    minHeight: 4, // Ensure even 0 values have a tiny visibility or just for style
   },
-  batterySegment: {
-    backgroundColor: '#CDDC39',
+  solarBar: {
+    backgroundColor: '#8BC34A',
   },
-  gridSegment: {
-    backgroundColor: '#E0E0E0',
+  batteryBar: {
+    backgroundColor: '#D4E157',
   },
-  segmentLabel: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: '#333',
+  gridBar: {
+    backgroundColor: '#F5F5F5',
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderStyle: 'dashed',
   },
   legend: {
     flexDirection: 'row',
@@ -101,17 +124,20 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   solarDot: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#8BC34A',
   },
   batteryDot: {
-    backgroundColor: '#CDDC39',
+    backgroundColor: '#D4E157',
   },
   gridDot: {
-    backgroundColor: '#E0E0E0',
+    backgroundColor: '#F5F5F5',
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderStyle: 'dashed',
   },
   legendText: {
     fontSize: 12,
     opacity: 0.7,
-    color: '#888', // Default color, will need to be handled for theme context if we want to be strict, but for now fixed color is fine as per original
+    color: '#888',
   },
 });

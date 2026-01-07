@@ -6,7 +6,7 @@ export function Card(props: ViewProps) {
 
   // Default colors: White for light mode, Dark Gray (#1a1a1a) for dark mode
   // The app background is black (#000) in dark mode, so cards need to be slightly lighter
-  const defaultLightColor = '#ffffff';
+  const defaultLightColor = '#f5f5f5';
   const defaultDarkColor = '#1a1a1a';
 
   return (

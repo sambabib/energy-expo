@@ -5,12 +5,13 @@ import { useAppContext } from '@/context/AppContext';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { StyleSheet, TouchableOpacity } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function FullScreenChartScreen() {
   const { type, title } = useLocalSearchParams<{ type: string; title: string }>();
   const router = useRouter();
   const { colorScheme } = useAppContext();
+  const insets = useSafeAreaInsets();
 
   const renderChart = () => {
     switch (type) {
@@ -24,16 +25,16 @@ export default function FullScreenChartScreen() {
   };
 
   return (
-    <SafeAreaView edges={['top', 'bottom']} style={[styles.container, { backgroundColor: colorScheme === 'dark' ? '#000' : '#fff' }]}>
+    <View style={[styles.container, { backgroundColor: colorScheme === 'dark' ? '#000' : '#fff' }]}>
       <Stack.Screen options={{ headerShown: false }} />
 
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 20 }]}>
         <TouchableOpacity
           onPress={() => router.back()}
           style={[styles.closeButton, { backgroundColor: 'rgba(128,128,128,0.15)' }]}
-          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
         >
-          <FontAwesome name="times" size={20} color={colorScheme === 'dark' ? '#fff' : '#000'} />
+          <FontAwesome name="times" size={24} color={colorScheme === 'dark' ? '#fff' : '#000'} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{title || 'Chart Details'}</Text>
         <View style={styles.placeholder} />
@@ -50,7 +51,7 @@ export default function FullScreenChartScreen() {
           </Text>
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -63,12 +64,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingBottom: 16,
+    // paddingTop is handled dynamically
   },
   closeButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',
   },

@@ -13,11 +13,10 @@ export default function SettingsScreen() {
         <View style={styles.container}>
           {/* Header */}
           <View style={styles.header}>
-            <TouchableOpacity style={styles.backButton}>
-              <FontAwesome name="chevron-left" size={18} color="#333" />
-            </TouchableOpacity>
             <Text style={styles.headerTitle}>Settings</Text>
-            <View style={styles.headerSpacer} />
+            <View style={styles.menuButton}>
+              <FontAwesome name="ellipsis-h" size={20} color="#666" />
+            </View>
           </View>
 
           {/* Account Section */}
@@ -157,21 +156,20 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 32,
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
   },
   headerTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 28,
+    fontWeight: 'bold',
   },
-  headerSpacer: {
+  menuButton: {
     width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   sectionTitle: {
     fontSize: 16,

@@ -10,7 +10,7 @@ import { useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const PERIODS = ['24 hour', 'Weekly', 'Monthly', '6 months'] as const;
+const PERIODS = ['Daily', 'Weekly', 'Monthly', '6 months'] as const;
 type Period = typeof PERIODS[number];
 
 export default function AnalyticsScreen() {
@@ -33,13 +33,13 @@ export default function AnalyticsScreen() {
           {/* Period Selector */}
           <View style={styles.periodSelector}>
             {PERIODS.map((period) => (
-              <View
+              <TouchableOpacity
                 key={period}
                 style={[
                   styles.periodButton,
                   selectedPeriod === period && styles.periodButtonActive,
                 ]}
-                onTouchEnd={() => setSelectedPeriod(period)}
+                onPress={() => setSelectedPeriod(period)}
               >
                 <Text
                   style={[
@@ -49,7 +49,7 @@ export default function AnalyticsScreen() {
                 >
                   {period}
                 </Text>
-              </View>
+              </TouchableOpacity>
             ))}
           </View>
 
@@ -59,7 +59,7 @@ export default function AnalyticsScreen() {
             activeOpacity={0.9}
           >
             <Card style={styles.card}>
-              <Text style={styles.cardTitle}>Consumption overview</Text>
+              <Text style={styles.cardTitle}>Consumption Overview</Text>
               <ConsumptionChart />
             </Card>
           </TouchableOpacity>
@@ -75,13 +75,13 @@ export default function AnalyticsScreen() {
             </View>
           </Card>
 
-          {/* Performance Metrics Card */}
+          {/* Power Output Card */}
           <TouchableOpacity
-            onPress={() => router.push({ pathname: '/full-screen-chart', params: { type: 'performance', title: 'Performance Metrics' } })}
+            onPress={() => router.push({ pathname: '/full-screen-chart', params: { type: 'performance', title: 'Power Output' } })}
             activeOpacity={0.9}
           >
             <Card style={styles.card}>
-              <Text style={styles.cardTitle}>Performance Metrics</Text>
+              <Text style={styles.cardTitle}>Power Output</Text>
               <PerformanceChart />
             </Card>
           </TouchableOpacity>
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   periodButtonActive: {
-    backgroundColor: '#fff',
+    backgroundColor: '#e39b65',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,

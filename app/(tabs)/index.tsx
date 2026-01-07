@@ -3,13 +3,63 @@ import { Text } from '@/components/Themed';
 import { useAppContext } from '@/context/AppContext';
 import { batteryData, energyFlowData, userData } from '@/services/mockData';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Image, ScrollView, StyleSheet, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Image, LayoutChangeEvent, ScrollView, StyleSheet, View } from 'react-native';
+import Animated, { Easing, useAnimatedProps, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Svg, { Path } from 'react-native-svg';
+
+const AnimatedSvgPath = Animated.createAnimatedComponent(Path);
+
+const FlowLine = ({ d, color }: { d: string; color: string }) => {
+  const offset = useSharedValue(0);
+
+  useEffect(() => {
+    offset.value = withRepeat(
+      withTiming(10, { duration: 1000, easing: Easing.linear }),
+      -1,
+      false
+    );
+  }, []);
+
+  const animatedProps = useAnimatedProps(() => ({
+    strokeDashoffset: -offset.value,
+  }));
+
+  return (
+    <AnimatedSvgPath
+      d={d}
+      stroke={color}
+      strokeWidth={2}
+      fill="none"
+      strokeDasharray="5, 5"
+      animatedProps={animatedProps}
+    />
+  );
+};
+
+const EnergyCard = ({ label, value, unit, icon, color }: { label: string, value: string | number, unit: string, icon: any, color: string }) => (
+  <View style={styles.energyCard}>
+    <View style={styles.energyCardHeader}>
+      <FontAwesome name={icon} size={14} color={color} style={{ marginRight: 6 }} />
+      <Text style={styles.energyCardLabel}>{label}</Text>
+    </View>
+    <View style={styles.energyCardValueContainer}>
+      <Text style={styles.energyCardValue}>{value}</Text>
+      <Text style={styles.energyCardUnit}>{unit}</Text>
+    </View>
+  </View>
+);
 
 export default function HomeScreen() {
   const { colorScheme } = useAppContext();
   const batteryBars = 10;
   const filledBars = Math.round((batteryData.level / 100) * batteryBars);
+  const [chartWidth, setChartWidth] = useState(0);
+
+  const onLayout = (event: LayoutChangeEvent) => {
+    setChartWidth(event.nativeEvent.layout.width);
+  };
 
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: colorScheme === 'dark' ? '#000' : '#fff' }]}>
@@ -41,122 +91,95 @@ export default function HomeScreen() {
             <View style={styles.cardSeparator} />
 
             {/* Energy Flow Section */}
-            <View style={styles.energyFlowSection}>
-              {/* Connection Lines */}
-              <View style={[StyleSheet.absoluteFill, { zIndex: -1 }]}>
-                {/* Export Line (Red) - Down and Right */}
-                <View style={{
-                  position: 'absolute',
-                  top: 80,
-                  left: 50,
-                  width: 2,
-                  height: 50,
-                  borderLeftWidth: 2,
-                  borderColor: '#ef5350',
-                  borderStyle: 'dashed',
-                }} />
-                <View style={{
-                  position: 'absolute',
-                  top: 130,
-                  left: 50,
-                  right: '50%',
-                  height: 2,
-                  borderTopWidth: 2,
-                  borderColor: '#ef5350',
-                  borderStyle: 'dashed',
-                }} />
-                <View style={{
-                  position: 'absolute',
-                  top: 130,
-                  left: '50%',
-                  height: 30,
-                  borderLeftWidth: 2,
-                  borderColor: '#ef5350',
-                  borderStyle: 'dashed',
-                }} />
+            <View style={styles.energyFlowSection} onLayout={onLayout}>
+              {/* Animated Connection Lines */}
+              {chartWidth > 0 && (
+                <View style={[StyleSheet.absoluteFill, { zIndex: -1 }]}>
+                  <Svg width="100%" height="100%">
+                    {(() => {
+                      const PADDING = 20;
+                      const CARD_HEIGHT = 90;
+                      const GAP_BELOW_CARDS = 20; // marginTop of houseContainer is 20
 
-                {/* Home Line (Green) - Straight Down */}
-                <View style={{
-                  position: 'absolute',
-                  top: 80,
-                  left: '50%',
-                  marginLeft: -1, // Center the 2px line
-                  height: 72,
-                  borderLeftWidth: 2,
-                  borderColor: '#66bb6a',
-                  borderStyle: 'dashed',
-                }} />
+                      // Calculate exact start points (bottom center of each card)
+                      const startY = CARD_HEIGHT; // Relative to the Svg container top (which matches energyFlowSection padding)
 
-                {/* Produce Line (Orange) - Straight Down */}
-                <View style={{
-                  position: 'absolute',
-                  top: 80,
-                  right: 50,
-                  height: 72,
-                  borderLeftWidth: 2,
-                  borderColor: '#ff7043',
-                  borderStyle: 'dashed',
-                }} />
-              </View>
+                      const innerWidth = chartWidth - (PADDING * 2);
+                      const cardWidth = innerWidth * 0.30; // 30% width per card
+
+                      // Card centers
+                      // Export (Left): PADDING + half card width
+                      const leftCardX = PADDING + (cardWidth / 2);
+
+                      // Home (Center): Center of chart
+                      const centerCardX = chartWidth / 2;
+
+                      // Produce (Right): Chart width - PADDING - half card width
+                      const rightCardX = chartWidth - PADDING - (cardWidth / 2);
+
+                      const houseSectionStartY = startY + GAP_BELOW_CARDS;
+
+                      // Target points on the house image
+                      // Adjusted for larger house image
+                      const roofPeakY = houseSectionStartY + 80;
+                      const roofSideY = houseSectionStartY + 130;
+
+                      return (
+                        <>
+                          {/* Export Line (Red) - From Left Card to House Left Roof */}
+                          <FlowLine
+                            d={`M ${leftCardX} ${startY} L ${leftCardX} ${houseSectionStartY + 40} L ${chartWidth * 0.35} ${roofSideY}`}
+                            color="#ef5350"
+                          />
+
+                          {/* Home Line (Green) - From Middle Card to House Top Roof */}
+                          <FlowLine
+                            d={`M ${centerCardX} ${startY} L ${centerCardX} ${roofPeakY}`}
+                            color="#66bb6a"
+                          />
+
+                          {/* Produce Line (Orange) - From Right Card to House Right Roof */}
+                          <FlowLine
+                            d={`M ${rightCardX} ${startY} L ${rightCardX} ${houseSectionStartY + 40} L ${chartWidth * 0.65} ${roofSideY}`}
+                            color="#ff7043"
+                          />
+                        </>
+                      );
+                    })()}
+                  </Svg>
+                </View>
+              )}
 
               {/* Floating Energy Data Points */}
               <View style={styles.energyPointsRow}>
-                <View style={[styles.energyBubble, styles.exportBubble]}>
-                  <Text style={styles.bubbleValue}>{energyFlowData.export} kw</Text>
-                  <Text style={styles.bubbleLabel}>Export</Text>
+                <View style={{ width: '30%' }}>
+                  <EnergyCard label="Export" value={energyFlowData.export} unit="kW" icon="bolt" color="#ef5350" />
                 </View>
-                <View style={[styles.energyBubble, styles.homeBubble]}>
-                  <Text style={styles.bubbleValue}>{energyFlowData.home} kw</Text>
-                  <Text style={styles.bubbleLabel}>Home</Text>
+                <View style={{ width: '30%' }}>
+                  <EnergyCard label="Home" value={energyFlowData.home} unit="kW" icon="home" color="#66bb6a" />
                 </View>
-                <View style={[styles.energyBubble, styles.produceBubble]}>
-                  <Text style={styles.bubbleValue}>{energyFlowData.produce} w</Text>
-                  <Text style={styles.bubbleLabel}>Produce</Text>
+                <View style={{ width: '30%' }}>
+                  <EnergyCard label="Produce" value={energyFlowData.produce} unit="W" icon="sun-o" color="#ff7043" />
                 </View>
               </View>
 
               {/* House Illustration */}
               <View style={styles.houseContainer}>
-                {/* Stored Energy Line */}
-                <View style={{
-                  position: 'absolute',
-                  bottom: 50,
-                  left: 50,
-                  width: 50,
-                  height: 40,
-                  zIndex: -1,
-                }}>
-                  <View style={{
-                    position: 'absolute',
-                    left: 0,
-                    bottom: 0,
-                    width: 2,
-                    height: '100%',
-                    borderLeftWidth: 2,
-                    borderColor: '#26a69a',
-                    borderStyle: 'dashed',
-                  }} />
-                  <View style={{
-                    position: 'absolute',
-                    left: 0,
-                    top: 0,
-                    width: '100%',
-                    height: 2,
-                    borderTopWidth: 2,
-                    borderColor: '#26a69a',
-                    borderStyle: 'dashed',
-                  }} />
-                </View>
-
                 <Image
                   source={require('@/assets/images/house.png')}
                   style={styles.houseImage}
                   resizeMode="contain"
                 />
-                {/* Stored Energy Point */}
-                <View style={[styles.energyBubble, styles.storedBubble]}>
-                  <Text style={styles.bubbleValue}>{energyFlowData.stored} kw</Text>
-                  <Text style={styles.bubbleLabel}>Stored</Text>
+
+                {/* Stored Energy Card (Overlaid) */}
+                <View style={styles.storedCardContainer}>
+                  <EnergyCard label="Battery" value={energyFlowData.stored} unit="kW" icon="battery-3" color="#26a69a" />
+                  {/* Connection line for battery */}
+                  <View style={{ position: 'absolute', top: -30, left: '50%', marginLeft: -1, zIndex: -1 }}>
+                    <Svg width={2} height={30}>
+                      <FlowLine d="M 1 30 L 1 0" color="#26a69a" />
+                    </Svg>
+                  </View>
                 </View>
               </View>
             </View>
@@ -302,50 +325,58 @@ const styles = StyleSheet.create({
   energyPointsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 16,
+    marginBottom: 0,
+    zIndex: 10,
   },
-  energyBubble: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    justifyContent: 'center',
+  energyCard: {
+    backgroundColor: '#1a1a1a', // Dark card background
+    borderRadius: 16,
+    padding: 12,
+    height: 90,
+    justifyContent: 'space-between',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
+  },
+  energyCardHeader: {
+    flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 2,
-    zIndex: 1,
   },
-  exportBubble: {
-    borderColor: '#ef5350',
+  energyCardLabel: {
+    color: '#aaa',
+    fontSize: 12,
+    fontWeight: '500',
   },
-  homeBubble: {
-    borderColor: '#66bb6a',
+  energyCardValueContainer: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
   },
-  produceBubble: {
-    borderColor: '#ff7043',
-  },
-  storedBubble: {
-    borderColor: '#26a69a',
-    position: 'absolute',
-    left: 20,
-    bottom: 20,
-  },
-  bubbleValue: {
-    fontSize: 14,
+  energyCardValue: {
+    color: '#fff',
+    fontSize: 20,
     fontWeight: 'bold',
+    marginRight: 4,
   },
-  bubbleLabel: {
-    fontSize: 10,
-    opacity: 0.7,
+  energyCardUnit: {
+    color: '#aaa',
+    fontSize: 12,
   },
   houseContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 20,
-    height: 280,
+    marginTop: 20,
+    height: 400, // Further increased height
     position: 'relative',
+    width: '100%',
   },
   houseImage: {
-    width: 350,
-    height: 280,
+    width: '100%',
+    height: '100%',
+    opacity: 0.9,
+  },
+  storedCardContainer: {
+    position: 'absolute',
+    bottom: 0,
+    width: '35%',
   },
   chargingCard: {
     // Card styles are handled by the component
@@ -457,7 +488,6 @@ const styles = StyleSheet.create({
   },
   combinedCard: {
     padding: 0,
-    overflow: 'hidden',
   },
   weatherSection: {
     flexDirection: 'row',
@@ -471,5 +501,6 @@ const styles = StyleSheet.create({
   },
   energyFlowSection: {
     padding: 20,
+    paddingBottom: 40,
   },
 });
