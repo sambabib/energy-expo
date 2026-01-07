@@ -395,9 +395,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(128,128,128,0.2)',
   },
   batterySegmentFilled: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#e39b65',
   },
   section: {
+    marginTop: 12,
     marginBottom: 24,
   },
   sectionHeader: {
@@ -421,9 +422,12 @@ const styles = StyleSheet.create({
   },
   consumptionCard: {
     width: '47%',
-    flexDirection: 'row',
-    alignItems: 'center',
+    height: 150,
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
     padding: 16,
+    position: 'relative',
   },
   consumptionIconContainer: {
     width: 40,
@@ -434,20 +438,22 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(128,128,128,0.1)',
   },
   consumptionInfo: {
-    flex: 1,
-    marginLeft: 12,
+    marginLeft: 0,
   },
   consumptionValue: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '600',
   },
   consumptionLabel: {
-    fontSize: 12,
+    fontSize: 14,
     opacity: 0.6,
-    marginTop: 2,
+    marginTop: 4,
   },
   arrowIcon: {
     transform: [{ rotate: '45deg' }],
+    position: 'absolute',
+    top: 16,
+    right: 16,
   },
   combinedCard: {
     padding: 0,
