@@ -1,10 +1,10 @@
 import { Card } from '@/components/Card';
 import { Text } from '@/components/Themed';
 import { useAppContext } from '@/context/AppContext';
-import { batteryData, energyFlowData, userData } from '@/services/mockData';
+import { batteryData, energyFlowData, scheduledCharges, userData } from '@/services/mockData';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useEffect, useState } from 'react';
-import { Image, LayoutChangeEvent, ScrollView, StyleSheet, View } from 'react-native';
+import { Image, LayoutChangeEvent, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Animated, { Easing, useAnimatedProps, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
@@ -66,7 +66,7 @@ export default function HomeScreen() {
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         <View style={styles.container}>
           {/* Header Section */}
-          <View style={styles.header}>
+          <View style={styles.headerCard}>
             <View>
               <Text style={styles.greeting}>Hi, {userData.name}</Text>
               <Text style={styles.subtitle}>Welcome back</Text>
@@ -213,10 +213,34 @@ export default function HomeScreen() {
             </View>
           </Card>
 
+          {/* Scheduled Charges Section */}
+          <View style={styles.section}>
+            <Card style={styles.scheduledCard}>
+              {scheduledCharges.map((charge, index) => (
+                <View key={charge.id}>
+                  <View style={styles.scheduledRow}>
+                    <View>
+                      <Text style={styles.scheduledTime}>{charge.start} - {charge.end}</Text>
+                      <Text style={styles.scheduledFrequency}>{charge.frequency}</Text>
+                    </View>
+                    <View style={styles.scheduledRight}>
+                      <Text style={styles.scheduledRate}>{charge.rate} W</Text>
+                    </View>
+                  </View>
+                  {index < scheduledCharges.length - 1 && <View style={styles.cardSeparator} />}
+                </View>
+              ))}
+            </Card>
+
+            <TouchableOpacity style={styles.createChargeButton}>
+              <Text style={styles.createChargeButtonText}>Create Scheduled Charge</Text>
+            </TouchableOpacity>
+          </View>
+
           {/* Consumptions Section */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Consumptions</Text>
+              <Text style={styles.sectionTitle}>Usage</Text>
               <Text style={styles.seeAll}>See all</Text>
             </View>
 
@@ -502,5 +526,57 @@ const styles = StyleSheet.create({
   energyFlowSection: {
     padding: 20,
     paddingBottom: 40,
+  },
+  headerCard: {
+    backgroundColor: '#1a1a1a', // Dark card background
+    borderRadius: 24,
+    padding: 20,
+    marginBottom: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
+  },
+  scheduledCard: {
+    padding: 0,
+    marginBottom: 16,
+  },
+  scheduledRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+  },
+  scheduledTime: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#fff',
+  },
+  scheduledFrequency: {
+    fontSize: 14,
+    opacity: 0.6,
+    marginTop: 4,
+    color: '#aaa',
+  },
+  scheduledRight: {
+    alignItems: 'flex-end',
+  },
+  scheduledRate: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#fff',
+  },
+  createChargeButton: {
+    backgroundColor: '#e39b65',
+    borderRadius: 16,
+    padding: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  createChargeButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

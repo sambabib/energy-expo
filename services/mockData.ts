@@ -43,4 +43,7 @@ export const performanceData = {
 
 export const co2Saved = 750;
 
-export const dayLabels = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+export const scheduledCharges = [
+  { id: '1', start: '12:00 AM', end: '06:00 AM', rate: 7000, frequency: 'Everyday' },
+  { id: '2', start: '10:00 PM', end: '11:30 PM', rate: 3500, frequency: 'Everyday' },
+];
