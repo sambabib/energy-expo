@@ -191,17 +191,43 @@ export default function HomeScreen() {
 
           {/* Charging Status Card */}
           <Card style={styles.chargingCard}>
+            {/* Top Header: Online Status & Energy Used */}
+            <View style={styles.chargingTopHeader}>
+              {/* Online Indicator */}
+              <View style={styles.onlineContainer}>
+                <Text style={styles.onlineText}>Online</Text>
+                <View style={[styles.onlineDot, { backgroundColor: '#4CAF50' }]} />
+              </View>
+
+              {/* Energy Used */}
+              <View style={styles.energyUsedContainer}>
+                <View style={styles.energyUsedLabelRow}>
+                  <FontAwesome name="bolt" size={14} color="#6C63FF" style={{ marginRight: 4 }} />
+                  <Text style={styles.energyUsedLabel}>Energy Used</Text>
+                </View>
+                <Text style={styles.energyUsedValue}>7.3 kWh</Text>
+              </View>
+            </View>
+
+            {/* Car Illustration */}
+            <View style={styles.carContainer}>
+              <Image
+                source={require('@/assets/images/ev-car.png')}
+                style={styles.carImage}
+                resizeMode="contain"
+              />
+            </View>
+
             <View style={styles.chargingHeader}>
               <View>
                 <Text style={styles.chargingTitle}>Charging</Text>
-                <Text style={styles.chargingSubtitle}>{batteryData.timeRemaining} remained</Text>
+                <Text style={styles.chargingSubtitle}>{batteryData.timeRemaining} remaining</Text>
               </View>
               <View style={styles.chargingRight}>
                 <Text style={styles.batteryIcon}>⚡</Text>
                 <Text style={styles.batteryPercent}>{batteryData.level}%</Text>
               </View>
             </View>
-            <Text style={styles.capacityText}>{batteryData.capacity} kw cap</Text>
 
             {/* Battery Progress Bar */}
             <View style={styles.batteryBar}>
@@ -277,7 +303,7 @@ export default function HomeScreen() {
           {/* Consumptions Section */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Usage</Text>
+              <Text style={styles.sectionTitle}>Consumption</Text>
               <Text style={styles.seeAll}>See all</Text>
             </View>
 
@@ -657,5 +683,66 @@ const styles = StyleSheet.create({
     color: '#666',
     fontSize: 14,
     fontStyle: 'italic',
+  },
+  carContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 0,
+    marginBottom: -100, // Pull content up to reduce gap
+    height: 400,
+    width: '100%',
+  },
+  carImage: {
+    width: '100%',
+    height: '100%',
+    opacity: 0.9,
+  },
+  chargingTopHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 0,
+    zIndex: 10,
+    paddingHorizontal: 10,
+    marginTop: 10,
+  },
+  onlineContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(76, 175, 80, 0.2)',
+  },
+  onlineDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    marginLeft: 6,
+  },
+  onlineText: {
+    color: '#4CAF50',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  energyUsedContainer: {
+    alignItems: 'flex-end',
+  },
+  energyUsedLabelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  energyUsedLabel: {
+    color: '#aaa',
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  energyUsedValue: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
