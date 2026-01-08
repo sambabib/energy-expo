@@ -1,8 +1,8 @@
 // Mock data for the energy app
 
 export const userData = {
-  name: 'Alex',
-  email: 'alex@email.com',
+  name: 'George',
+  email: 'george@email.com',
   initials: 'AL',
 };
 
@@ -44,6 +44,9 @@ export const performanceData = {
 export const co2Saved = 750;
 
 export const scheduledCharges = [
-  { id: '1', start: '12:00 AM', end: '06:00 AM', rate: 7000, frequency: 'Everyday' },
-  { id: '2', start: '10:00 PM', end: '11:30 PM', rate: 3500, frequency: 'Everyday' },
+  { id: '1', start: '12:00 AM', end: '06:00 AM', rate: 7000, frequency: 'Everyday', type: 'charge' },
+  { id: '2', start: '10:00 PM', end: '11:30 PM', rate: 3500, frequency: 'Everyday', type: 'charge' },
+  { id: '3', start: '06:00 PM', end: '09:00 PM', rate: 2000, frequency: 'Weekends', type: 'discharge' },
 ];
+
+export const dayLabels = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];

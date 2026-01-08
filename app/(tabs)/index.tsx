@@ -56,10 +56,15 @@ export default function HomeScreen() {
   const batteryBars = 10;
   const filledBars = Math.round((batteryData.level / 100) * batteryBars);
   const [chartWidth, setChartWidth] = useState(0);
+  const [selectedControlTab, setSelectedControlTab] = useState<'Charge' | 'Discharge'>('Charge');
 
   const onLayout = (event: LayoutChangeEvent) => {
     setChartWidth(event.nativeEvent.layout.width);
   };
+
+  const filteredCharges = scheduledCharges.filter(
+    (charge) => charge.type === selectedControlTab.toLowerCase()
+  );
 
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: colorScheme === 'dark' ? '#000' : '#fff' }]}>
@@ -68,8 +73,7 @@ export default function HomeScreen() {
           {/* Header Section */}
           <View style={styles.headerCard}>
             <View>
-              <Text style={styles.greeting}>Hi, {userData.name}</Text>
-              <Text style={styles.subtitle}>Welcome back</Text>
+              <Text style={styles.greeting}>Welcome Back, {userData.name}</Text>
             </View>
             <View style={styles.notificationBadge}>
               <FontAwesome name="bell-o" size={20} color="#666" />
@@ -213,27 +217,60 @@ export default function HomeScreen() {
             </View>
           </Card>
 
-          {/* Scheduled Charges Section */}
+          {/* Scheduled Control Section */}
           <View style={styles.section}>
-            <Card style={styles.scheduledCard}>
-              {scheduledCharges.map((charge, index) => (
-                <View key={charge.id}>
-                  <View style={styles.scheduledRow}>
-                    <View>
-                      <Text style={styles.scheduledTime}>{charge.start} - {charge.end}</Text>
-                      <Text style={styles.scheduledFrequency}>{charge.frequency}</Text>
-                    </View>
-                    <View style={styles.scheduledRight}>
-                      <Text style={styles.scheduledRate}>{charge.rate} W</Text>
-                    </View>
-                  </View>
-                  {index < scheduledCharges.length - 1 && <View style={styles.cardSeparator} />}
-                </View>
+            <View style={[styles.sectionHeader, { marginBottom: 24 }]}>
+              <Text style={styles.sectionTitle}>Scheduled Control</Text>
+            </View>
+
+            {/* Tab Switcher */}
+            <View style={styles.tabSwitcher}>
+              {['Charge', 'Discharge'].map((tab) => (
+                <TouchableOpacity
+                  key={tab}
+                  style={[
+                    styles.tabButton,
+                    selectedControlTab === tab && styles.tabButtonActive,
+                  ]}
+                  onPress={() => setSelectedControlTab(tab as 'Charge' | 'Discharge')}
+                >
+                  <Text
+                    style={[
+                      styles.tabButtonText,
+                      selectedControlTab === tab && styles.tabButtonTextActive,
+                    ]}
+                  >
+                    {tab}
+                  </Text>
+                </TouchableOpacity>
               ))}
+            </View>
+
+            <Card style={styles.scheduledCard}>
+              {filteredCharges.length > 0 ? (
+                filteredCharges.map((charge, index) => (
+                  <View key={charge.id}>
+                    <View style={styles.scheduledRow}>
+                      <View>
+                        <Text style={styles.scheduledTime}>{charge.start} - {charge.end}</Text>
+                        <Text style={styles.scheduledFrequency}>{charge.frequency}</Text>
+                      </View>
+                      <View style={styles.scheduledRight}>
+                        <Text style={styles.scheduledRate}>{charge.rate} W</Text>
+                      </View>
+                    </View>
+                    {index < filteredCharges.length - 1 && <View style={styles.cardSeparator} />}
+                  </View>
+                ))
+              ) : (
+                <View style={styles.emptyState}>
+                  <Text style={styles.emptyStateText}>No scheduled {selectedControlTab.toLowerCase()}s</Text>
+                </View>
+              )}
             </Card>
 
             <TouchableOpacity style={styles.createChargeButton}>
-              <Text style={styles.createChargeButtonText}>Create Scheduled Charge</Text>
+              <Text style={styles.createChargeButtonText}>Create Scheduled {selectedControlTab}</Text>
             </TouchableOpacity>
           </View>
 
@@ -317,7 +354,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   greeting: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
   },
   subtitle: {
@@ -578,5 +615,47 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  tabSwitcher: {
+    flexDirection: 'row',
+    backgroundColor: 'rgba(128,128,128,0.1)',
+    borderRadius: 12,
+    padding: 4,
+    marginBottom: 16,
+  },
+  tabButton: {
+    flex: 1,
+    paddingVertical: 10,
+    alignItems: 'center',
+    borderRadius: 8,
+  },
+  tabButtonActive: {
+    backgroundColor: '#e39b65',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  tabButtonText: {
+    fontSize: 14,
+    fontWeight: '500',
+    opacity: 0.6,
+    color: '#aaa',
+  },
+  tabButtonTextActive: {
+    opacity: 1,
+    fontWeight: '600',
+    color: '#fff',
+  },
+  emptyState: {
+    padding: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyStateText: {
+    color: '#666',
+    fontSize: 14,
+    fontStyle: 'italic',
   },
 });

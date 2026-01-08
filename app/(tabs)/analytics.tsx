@@ -10,7 +10,7 @@ import { useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const PERIODS = ['Daily', 'Weekly', 'Monthly', '6 months'] as const;
+const PERIODS = ['Daily', 'Weekly', 'Monthly', 'Yearly'] as const;
 type Period = typeof PERIODS[number];
 
 export default function AnalyticsScreen() {
