@@ -1,8 +1,9 @@
 import { Card } from '@/components/Card';
 import { Text } from '@/components/Themed';
 import { useAppContext } from '@/context/AppContext';
-import { batteryData, energyFlowData, scheduledCharges, userData } from '@/services/mockData';
+import { batteryData, consumptionData, energyFlowData, scheduledCharges, userData } from '@/services/mockData';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Image, LayoutChangeEvent, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Animated, { Easing, useAnimatedProps, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
@@ -38,7 +39,7 @@ const FlowLine = ({ d, color }: { d: string; color: string }) => {
   );
 };
 
-const EnergyCard = ({ label, value, unit, icon, color }: { label: string, value: string | number, unit: string, icon: any, color: string }) => (
+const EnergyCard = ({ label, value, unit, icon, color, children }: { label: string, value: string | number, unit: string, icon: any, color: string, children?: React.ReactNode }) => (
   <View style={styles.energyCard}>
     <View style={styles.energyCardHeader}>
       <FontAwesome name={icon} size={14} color={color} style={{ marginRight: 6 }} />
@@ -48,6 +49,7 @@ const EnergyCard = ({ label, value, unit, icon, color }: { label: string, value:
       <Text style={styles.energyCardValue}>{value}</Text>
       <Text style={styles.energyCardUnit}>{unit}</Text>
     </View>
+    {children}
   </View>
 );
 
@@ -157,13 +159,13 @@ export default function HomeScreen() {
               {/* Floating Energy Data Points */}
               <View style={styles.energyPointsRow}>
                 <View style={{ width: '30%' }}>
-                  <EnergyCard label="Export" value={energyFlowData.export} unit="kW" icon="bolt" color="#ef5350" />
+                  <EnergyCard label="Grid" value={energyFlowData.export} unit="kW" icon="bolt" color="#ef5350" />
                 </View>
                 <View style={{ width: '30%' }}>
                   <EnergyCard label="Home" value={energyFlowData.home} unit="kW" icon="home" color="#66bb6a" />
                 </View>
                 <View style={{ width: '30%' }}>
-                  <EnergyCard label="Produce" value={energyFlowData.produce} unit="W" icon="sun-o" color="#ff7043" />
+                  <EnergyCard label="Solar" value={energyFlowData.produce} unit="W" icon="sun-o" color="#ff7043" />
                 </View>
               </View>
 
@@ -177,7 +179,11 @@ export default function HomeScreen() {
 
                 {/* Stored Energy Card (Overlaid) */}
                 <View style={styles.storedCardContainer}>
-                  <EnergyCard label="Battery" value={energyFlowData.stored} unit="kW" icon="battery-3" color="#26a69a" />
+                  <EnergyCard label="Battery" value={energyFlowData.stored} unit="kW" icon="battery-3" color="#26a69a">
+                    <Text style={{ fontSize: 10, color: '#4CAF50', fontWeight: 'bold', marginTop: 2 }}>
+                      SOC: {batteryData.level}%
+                    </Text>
+                  </EnergyCard>
                   {/* Connection line for battery */}
                   <View style={{ position: 'absolute', top: -30, left: '50%', marginLeft: -1, zIndex: -1 }}>
                     <Svg width={2} height={30}>
@@ -212,7 +218,7 @@ export default function HomeScreen() {
             {/* Car Illustration */}
             <View style={styles.carContainer}>
               <Image
-                source={require('@/assets/images/ev-car.png')}
+                source={require('@/assets/images/car-side.png')}
                 style={styles.carImage}
                 resizeMode="contain"
               />
@@ -304,53 +310,29 @@ export default function HomeScreen() {
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>Consumption</Text>
-              <Text style={styles.seeAll}>See all</Text>
+              <TouchableOpacity onPress={() => router.push('/consumption-details')}>
+                <Text style={styles.seeAll}>See all</Text>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.consumptionGrid}>
-              <Card style={styles.consumptionCard}>
-                <View style={styles.consumptionIconContainer}>
-                  <FontAwesome name="car" size={20} color="#4CAF50" />
-                </View>
-                <View style={styles.consumptionInfo}>
-                  <Text style={styles.consumptionValue}>3.2 kWh</Text>
-                  <Text style={styles.consumptionLabel}>Car</Text>
-                </View>
-                <FontAwesome name="arrow-up" size={12} color="#999" style={styles.arrowIcon} />
-              </Card>
-
-              <Card style={styles.consumptionCard}>
-                <View style={styles.consumptionIconContainer}>
-                  <FontAwesome name="television" size={20} color="#FF9800" />
-                </View>
-                <View style={styles.consumptionInfo}>
-                  <Text style={styles.consumptionValue}>1.8 kWh</Text>
-                  <Text style={styles.consumptionLabel}>Electronics</Text>
-                </View>
-                <FontAwesome name="arrow-up" size={12} color="#999" style={styles.arrowIcon} />
-              </Card>
-
-              <Card style={styles.consumptionCard}>
-                <View style={styles.consumptionIconContainer}>
-                  <FontAwesome name="snowflake-o" size={20} color="#2196F3" />
-                </View>
-                <View style={styles.consumptionInfo}>
-                  <Text style={styles.consumptionValue}>4.5 kWh</Text>
-                  <Text style={styles.consumptionLabel}>AC</Text>
-                </View>
-                <FontAwesome name="arrow-up" size={12} color="#999" style={styles.arrowIcon} />
-              </Card>
-
-              <Card style={styles.consumptionCard}>
-                <View style={styles.consumptionIconContainer}>
-                  <FontAwesome name="lightbulb-o" size={20} color="#FFC107" />
-                </View>
-                <View style={styles.consumptionInfo}>
-                  <Text style={styles.consumptionValue}>0.8 kWh</Text>
-                  <Text style={styles.consumptionLabel}>Lights</Text>
-                </View>
-                <FontAwesome name="arrow-up" size={12} color="#999" style={styles.arrowIcon} />
-              </Card>
+              {consumptionData.slice(0, 4).map((item) => (
+                <Card key={item.id} style={styles.consumptionCard}>
+                  <View style={styles.consumptionIconContainer}>
+                    <FontAwesome name={item.icon as any} size={20} color={item.color} />
+                  </View>
+                  <View style={styles.consumptionInfo}>
+                    <Text style={styles.consumptionValue}>{item.value} {item.unit}</Text>
+                    <Text style={styles.consumptionLabel}>{item.name}</Text>
+                    {item.name === 'Battery' && (
+                      <Text style={{ fontSize: 10, color: '#4CAF50', fontWeight: 'bold', marginTop: 2 }}>
+                        SOC: {batteryData.level}%
+                      </Text>
+                    )}
+                  </View>
+                  <FontAwesome name="arrow-up" size={12} color="#999" style={styles.arrowIcon} />
+                </Card>
+              ))}
             </View>
           </View>
         </View>
@@ -419,8 +401,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#1a1a1a', // Dark card background
     borderRadius: 16,
     padding: 12,
-    height: 90,
-    justifyContent: 'space-between',
+    minHeight: 90, // Allow expansion
+    justifyContent: 'center',
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.1)',
   },
@@ -687,7 +669,7 @@ const styles = StyleSheet.create({
   carContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 0,
+    marginTop: -40, // Pull car up to reduce top whitespace
     marginBottom: -100, // Pull content up to reduce gap
     height: 400,
     width: '100%',

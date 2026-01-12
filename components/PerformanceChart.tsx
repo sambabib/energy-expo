@@ -99,7 +99,7 @@ export function PerformanceChart({ style, chartHeight = 160 }: { style?: StylePr
 
           {/* X-axis labels */}
           <View style={styles.xAxisLabels}>
-            {dayLabels.map((label, index) => (
+            {(dayLabels || []).map((label, index) => (
               <View key={index} style={{ alignItems: 'center', width: 40, marginLeft: -20, left: `${(index / 6) * 100}%`, position: 'absolute' }}>
                 {index === 4 ? ( // Highlight "Oct" equivalent
                   <View style={styles.activeLabelContainer}>

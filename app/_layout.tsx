@@ -4,9 +4,10 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import 'react-native-reanimated';
 
+import { AnimatedSplashScreen } from '@/components/AnimatedSplashScreen';
 import { AppProvider, useAppContext } from '@/context/AppContext';
 
 export {
@@ -27,6 +28,7 @@ export default function RootLayout() {
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     ...FontAwesome.font,
   });
+  const [showSplash, setShowSplash] = useState(true);
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
@@ -34,9 +36,7 @@ export default function RootLayout() {
   }, [error]);
 
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
+    // Only verify loaded here, splash hiding is handled by the custom component
   }, [loaded]);
 
   if (!loaded) {
@@ -46,6 +46,7 @@ export default function RootLayout() {
   return (
     <AppProvider>
       <RootLayoutNav />
+      {showSplash && <AnimatedSplashScreen onFinish={() => setShowSplash(false)} />}
     </AppProvider>
   );
 }

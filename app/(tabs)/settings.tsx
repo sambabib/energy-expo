@@ -23,13 +23,9 @@ export default function SettingsScreen() {
           <Text style={styles.sectionTitle}>Account</Text>
 
           <View style={styles.settingRow}>
-            <Text style={styles.settingLabel}>Account</Text>
-            <Switch
-              value={settings.accountEnabled}
-              onValueChange={(value) => updateSetting('accountEnabled', value)}
-              trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
-              thumbColor="#fff"
-            />
+            <TouchableOpacity onPress={() => console.log('Logout pressed')}>
+              <Text style={[styles.settingLabel, { color: '#ef5350', fontWeight: '600' }]}>Log Out</Text>
+            </TouchableOpacity>
           </View>
           <View style={styles.divider} />
 

@@ -7,10 +7,10 @@ export const userData = {
 };
 
 export const energyFlowData = {
-  export: 1.5,
+  export: 3.06,
   home: 64,
-  produce: 3.65,
-  stored: 129,
+  produce: 128,
+  stored: 2.6,
 };
 
 export const batteryData = {
@@ -20,10 +20,11 @@ export const batteryData = {
 };
 
 export const consumptionData = [
-  { id: '1', name: 'Car', icon: 'car', value: 3.2, color: '#4CAF50' },
-  { id: '2', name: 'Electronics', icon: 'television', value: 1.8, color: '#FF9800' },
-  { id: '3', name: 'AC', icon: 'snowflake-o', value: 4.5, color: '#2196F3' },
-  { id: '4', name: 'Lights', icon: 'lightbulb-o', value: 0.8, color: '#FFC107' },
+  { id: '1', name: 'Grid', icon: 'bolt', value: 3.06, unit: 'kW', color: '#ef5350' },
+  { id: '2', name: 'Home', icon: 'home', value: 64, unit: 'kW', color: '#66bb6a' },
+  { id: '3', name: 'Solar', icon: 'sun-o', value: 128, unit: 'W', color: '#ff7043' },
+  { id: '4', name: 'Battery', icon: 'battery-3', value: 2.6, unit: 'kW', color: '#26a69a' },
+  { id: '5', name: 'EV', icon: 'car', value: 3.2, unit: 'kWh', color: '#4CAF50' },
 ];
 
 export const analyticsConsumptionData = [
